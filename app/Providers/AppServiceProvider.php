@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Branch;
 use App\Models\User;
+use App\Policies\BranchPolicy;
 use App\Policies\TestUsersPolicy;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFour();
+
+        // Policies
         Gate::policy(User::class, TestUsersPolicy::class);
+        Gate::policy(Branch::class, BranchPolicy::class);
     }
 }

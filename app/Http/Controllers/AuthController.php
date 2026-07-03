@@ -27,16 +27,17 @@ class AuthController extends Controller
             return back()->withErrors(['email' => $result['message']]);
         }
 
-        return redirect()->route('dashboard');
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard.index');
     }
 
-    public function logout(){
+    public function logout(Request $request){
 
         $result = $this->service->logout();
-        
-        if($result['success'] === false){
-            return back()->with('error', $result['message']);
-        }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('login');
     }

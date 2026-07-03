@@ -26,7 +26,12 @@
         }
 
         .auth-left {
-            background: linear-gradient(135deg, #111827, #1f2937);
+            background: linear-gradient(
+                                180deg,
+                                rgb(26, 67, 84) 0%,
+                                rgb(35, 88, 110) 55%,
+                                rgb(38, 94, 118) 100%
+                            );
             color: white;
             padding: 64px;
             display: flex;

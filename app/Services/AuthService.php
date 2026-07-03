@@ -27,6 +27,9 @@ class AuthService
         }
 
         if(! $user->is_active){
+
+            Auth::logout();
+
             return [
                 'success' => false,
                 'message' => 'Your account is inactive. Please contact the admin.',
@@ -43,13 +46,6 @@ class AuthService
     }
 
     public function logout(){
-
-        if (! Auth::check()) {
-            return [
-                'success' => false,
-                'message' => 'No authenticated user.',
-            ];
-        }
 
         Auth::logout();
 
