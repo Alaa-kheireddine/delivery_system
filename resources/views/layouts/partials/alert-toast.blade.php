@@ -7,12 +7,27 @@
 
             <div class="d-flex">
                 <div class="toast-body">
-                    {{ session('success') ?? session('error') ?? $errors->first() }}
+
+                    @if (session('success'))
+                        {{ session('success') }}
+
+                    @elseif (session('error'))
+                        {{ session('error') }}
+
+                    @elseif ($errors->any())
+                        <ul class="mb-0 ps-3">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+
                 </div>
 
                 <button type="button"
                         class="btn-close btn-close-white me-2 m-auto"
-                        data-bs-dismiss="toast"></button>
+                        data-bs-dismiss="toast">
+                </button>
             </div>
         </div>
     </div>
@@ -23,7 +38,7 @@
 
             if (toastElement) {
                 const toast = new bootstrap.Toast(toastElement, {
-                    delay: 3000
+                    delay: 5000
                 });
 
                 toast.show();
