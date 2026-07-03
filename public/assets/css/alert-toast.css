@@ -1,0 +1,153 @@
+.custom-toast-container {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 9999;
+    width: min(420px, calc(100vw - 28px));
+}
+
+.custom-toast {
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(16, 24, 40, 0.16);
+}
+
+.toast-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 16px 14px;
+}
+
+.toast-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.custom-toast-success .toast-icon {
+    background: #e8f8ef;
+    color: #198754;
+}
+
+.custom-toast-danger .toast-icon {
+    background: #fdecec;
+    color: #dc3545;
+}
+
+.toast-message {
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-message strong {
+    display: block;
+    font-size: 15px;
+    color: #1f2937;
+    margin-bottom: 3px;
+}
+
+.toast-message p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.toast-message ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.toast-close {
+    border: 0;
+    background: transparent;
+    color: #9ca3af;
+    font-size: 14px;
+    padding: 4px;
+}
+
+.toast-progress {
+    height: 4px;
+    animation: toastProgress 4s linear forwards;
+}
+
+.custom-toast-success .toast-progress {
+    background: #198754;
+}
+
+.custom-toast-danger .toast-progress {
+    background: #dc3545;
+}
+
+@keyframes toastProgress {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+@media (max-width: 576px) {
+    .custom-toast-container {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        padding: 0;
+    }
+
+    .custom-toast {
+        border-radius: 14px;
+        box-shadow: 0 10px 28px rgba(16, 24, 40, 0.14);
+    }
+
+    .toast-content {
+        padding: 12px 12px 10px;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .toast-icon {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 11px;
+        font-size: 17px;
+    }
+
+    .toast-message strong {
+        font-size: 13px;
+        margin-bottom: 1px;
+    }
+
+    .toast-message p,
+    .toast-message ul {
+        font-size: 12.5px;
+        line-height: 1.35;
+    }
+
+    .toast-message ul {
+        padding-left: 15px;
+    }
+
+    .toast-close {
+        font-size: 12px;
+        padding: 3px;
+    }
+
+    .toast-progress {
+        height: 3px;
+    }
+}

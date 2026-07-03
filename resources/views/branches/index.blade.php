@@ -1,5 +1,4 @@
-@extends('layouts.a
-pp')
+@extends('layouts.app')
 
 @section('styles')
 @endsection
