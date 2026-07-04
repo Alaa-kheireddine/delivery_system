@@ -86,11 +86,17 @@ body.sidebar-hidden .sidebar {
 }
 
 .sidebar-link.active {
-    background: var(--sidebar-active);
-    color: #fff;
+    background: var(--sidebar-active) ;
+    color: #fff !important;
     border-inline-start-color: var(--blue);
 }
 
+.sidebar-sublink.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-weight: 700;
+    border-left: 3px solid var(--blue);
+}
 .sidebar-border {
     border-color: var(--sidebar-border) !important;
 }

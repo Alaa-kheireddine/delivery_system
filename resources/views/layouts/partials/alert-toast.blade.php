@@ -1,48 +1,63 @@
 @if (session('success') || session('error') || $errors->any())
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-        <div id="alertToast"
-             class="toast align-items-center border-0 text-white
-             {{ session('success') ? 'bg-success' : 'bg-danger' }}"
-             role="alert">
 
-            <div class="d-flex">
-                <div class="toast-body">
+@php
+    $type = session('success') ? 'success' : 'danger';
 
-                    @if (session('success'))
-                        {{ session('success') }}
+    $message = session('success')
+        ?? session('error')
+        ?? null;
+@endphp
 
-                    @elseif (session('error'))
-                        {{ session('error') }}
+<div class="toast-container custom-toast-container">
+    <div id="alertToast"
+         class="toast custom-toast custom-toast-{{ $type }}"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         data-bs-delay="3500">
 
-                    @elseif ($errors->any())
-                        <ul class="mb-0 ps-3">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-
-                </div>
-
-                <button type="button"
-                        class="btn-close btn-close-white me-2 m-auto"
-                        data-bs-dismiss="toast">
-                </button>
+        <div class="toast-content">
+            <div class="toast-icon">
+                <i class="bi {{ $type === 'success' ? 'bi-check-lg' : 'bi-exclamation-lg' }}"></i>
             </div>
+
+            <div class="toast-message">
+                <strong>{{ $type === 'success' ? 'Success' : 'Error' }}</strong>
+
+                @if ($message)
+                    <p>{{ $message }}</p>
+                @elseif ($errors->any())
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+
+            <button type="button"
+                    class="toast-close"
+                    data-bs-dismiss="toast"
+                    aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
         </div>
+
+        <div class="toast-progress"></div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toastElement = document.getElementById('alertToast');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toastElement = document.getElementById('alertToast');
 
-            if (toastElement) {
-                const toast = new bootstrap.Toast(toastElement, {
-                    delay: 5000
-                });
+        if (toastElement) {
+            const toast = new bootstrap.Toast(toastElement, {
+                delay: 3500
+            });
 
-                toast.show();
-            }
-        });
-    </script>
+            toast.show();
+        }
+    });
+</script>
 @endif

@@ -1,4 +1,42 @@
-    <aside class="sidebar" id="sidebar">
+@php
+    $shipmentsOpen = request()->routeIs('shipments.*');
+
+    $workOpen = request()->routeIs(
+        'missions.*',
+        'shipments.active'
+    );
+
+    $managementOpen = request()->routeIs(
+        'branches.*',
+        'shippers.*',
+        'customers.*',
+        'shipment-assignments.*'
+    );
+
+    $financeOpen = request()->routeIs(
+        'expenses.*',
+        'payments.*',
+        'cod.*'
+    );
+
+    $reportsOpen = request()->routeIs('reports.*');
+
+    $systemOpen = request()->routeIs(
+        'recent-actions.*',
+        'notifications.*',
+        'whatsapp.*',
+        'chats.*'
+    );
+
+    $adminOpen = request()->routeIs(
+        'users.*',
+        'roles.*',
+        'permissions.*',
+        'settings.*'
+    );
+@endphp
+
+<aside class="sidebar" id="sidebar">
 
     {{-- Header --}}
     <div class="sidebar-header border-bottom sidebar-border d-flex align-items-center justify-content-between p-3">
@@ -66,14 +104,48 @@
                 <i class="bi bi-chevron-down ms-auto"></i>
             </button>
 
-        <div class="sidebar-submenu">
-            {{-- route('missions.index') --}}
-            <a href="#" class="sidebar-sublink">My Missions</a>
+        {{-- Shipments --}}
+        <div class="sidebar-dropdown {{ $shipmentsOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn {{ $shipmentsOpen ? 'active' : '' }}"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-box-seam"></i>
+                <span>Shipments</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
-            {{-- route('shipments.active') --}}
-            <a href="#" class="sidebar-sublink">My Active Shipments</a>
+            <div class="sidebar-submenu">
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.index') ? 'active' : '' }}">
+                    All Shipments
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.pending') ? 'active' : '' }}">
+                    Pending Shipments
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.active') ? 'active' : '' }}">
+                    Active Shipments
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.delivered') ? 'active' : '' }}">
+                    Delivered Shipments
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.cancelled') ? 'active' : '' }}">
+                    Cancelled Shipments
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.trashed') ? 'active' : '' }}">
+                    Deleted Shipments
+                </a>
+            </div>
         </div>
-    </div>
 
         {{-- Management --}}
 
@@ -94,17 +166,15 @@
                 </button>
 
             <div class="sidebar-submenu">
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('missions.*') ? 'active' : '' }}">
+                    My Missions
+                </a>
 
-                <a href="{{ route('branches.index') }}" class="sidebar-sublink">Branches</a>
-
-                {{-- route('shippers.index') --}}
-                <a href="#" class="sidebar-sublink">Shippers</a>
-
-                {{-- route('customers.index') --}}
-                <a href="#" class="sidebar-sublink">Customers</a>
-
-                {{-- route('shipment-assignments.index') --}}
-                <a href="#" class="sidebar-sublink">Assignments</a>
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('shipments.active') ? 'active' : '' }}">
+                    My Active Shipments
+                </a>
             </div>
         </div>
     @endif
@@ -119,15 +189,67 @@
                 <i class="bi bi-chevron-down ms-auto"></i>
             </button>
 
-        <div class="sidebar-submenu">
-            {{-- route('expenses.index') --}}
-            <a href="#" class="sidebar-sublink">Expenses</a>
+        {{-- Management --}}
+        @if (auth()->user()->role->name === 'admin' || auth()->user()->role->name === 'manager')
+            <div class="sidebar-dropdown {{ $managementOpen ? 'open' : '' }}">
+                <button class="sidebar-link sidebar-dropdown-btn "
+                        type="button"
+                        onclick="toggleSidebarDropdown(this)">
+                    <i class="bi bi-diagram-3"></i>
+                    <span>Management</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
 
-            {{-- route('payments.index') --}}
-            <a href="#" class="sidebar-sublink">Payments</a>
+                <div class="sidebar-submenu">
+                    <a href="{{ route('branches.index') }}"
+                       class="sidebar-sublink {{ request()->routeIs('branches.*') ? 'active' : '' }}">
+                        Branches
+                    </a>
 
-            {{-- route('cod.index') --}}
-            <a href="#" class="sidebar-sublink">Cash Collection</a>
+                    <a href="#"
+                       class="sidebar-sublink {{ request()->routeIs('shippers.*') ? 'active' : '' }}">
+                        Shippers
+                    </a>
+
+                    <a href="#"
+                       class="sidebar-sublink {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                        Customers
+                    </a>
+
+                    <a href="#"
+                       class="sidebar-sublink {{ request()->routeIs('shipment-assignments.*') ? 'active' : '' }}">
+                        Assignments
+                    </a>
+                </div>
+            </div>
+        @endif
+
+        {{-- Finance --}}
+        <div class="sidebar-dropdown {{ $financeOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn {{ $financeOpen ? 'active' : '' }}"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-wallet"></i>
+                <span>Finance</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
+
+            <div class="sidebar-submenu">
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
+                    Expenses
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('payments.*') ? 'active' : '' }}">
+                    Payments
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('cod.*') ? 'active' : '' }}">
+                    Cash Collection
+                </a>
+            </div>
         </div>
     </div>
 
@@ -145,11 +267,32 @@
             {{-- route('reports.index') --}}
             <a href="#" class="sidebar-sublink">Reports Overview</a>
 
-            {{-- route('reports.shipments') --}}
-            <a href="#" class="sidebar-sublink">Shipment Reports</a>
+        {{-- Reports --}}
+        <div class="sidebar-dropdown {{ $reportsOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn {{ $reportsOpen ? 'active' : '' }}"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Reports</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
-            {{-- route('reports.finance') --}}
-            <a href="#" class="sidebar-sublink">Finance Reports</a>
+            <div class="sidebar-submenu">
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('reports.index') ? 'active' : '' }}">
+                    Reports Overview
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('reports.shipments') ? 'active' : '' }}">
+                    Shipment Reports
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('reports.finance') ? 'active' : '' }}">
+                    Finance Reports
+                </a>
+            </div>
         </div>
     </div>
 
@@ -163,18 +306,37 @@
                 <i class="bi bi-chevron-down ms-auto"></i>
             </button>
 
-        <div class="sidebar-submenu">
-            {{-- route('recent-actions.index') --}}
-            <a href="#" class="sidebar-sublink">Recent Actions</a>
+        {{-- System --}}
+        <div class="sidebar-dropdown {{ $systemOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn {{ $systemOpen ? 'active' : '' }}"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-gear"></i>
+                <span>System</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
-            {{-- route('notifications.index') --}}
-            <a href="#" class="sidebar-sublink">Notifications</a>
+            <div class="sidebar-submenu">
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('recent-actions.*') ? 'active' : '' }}">
+                    Recent Actions
+                </a>
 
-            {{-- route('whatsapp.index') --}}
-            <a href="#" class="sidebar-sublink">WhatsApp</a>
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+                    Notifications
+                </a>
 
-            {{-- route('chats.index') --}}
-            <a href="#" class="sidebar-sublink">Chats</a>
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('whatsapp.*') ? 'active' : '' }}">
+                    WhatsApp
+                </a>
+
+                <a href="#"
+                   class="sidebar-sublink {{ request()->routeIs('chats.*') ? 'active' : '' }}">
+                    Chats
+                </a>
+            </div>
         </div>
     </div>
 
@@ -219,7 +381,7 @@
             </div>
         @endif
 
-</nav>
+    </nav>
 
     {{-- Footer --}}
     <div class="sidebar-footer p-3 border-top sidebar-border">
@@ -265,7 +427,6 @@
 <script>
     function toggleSidebarDropdown(button) {
         const dropdown = button.closest('.sidebar-dropdown');
-
         dropdown.classList.toggle('open');
     }
 </script>
