@@ -13,13 +13,25 @@ class UserController extends Controller
 {
     public function __construct(private UserService $service)
     {}
-    public function index(){
+    public function index(Request $request){
 
         $this->authorize('viewAny', User::class);
 
-        $data = $this->service->getIndexData();
-        
+        $rules = [
+            'search' => ['nullable', 'string', 'max:100'],
+            'role_name' => ['nullable', 'string', 'exists:roles,name'],
+            'status' => ['nullable', 'in:active,inactive'],
+            'password_status' => ['nullable', 'in:must_change,changed,not_changed'],
+        ];
 
+        if (Auth::user()->role->name === 'admin') {
+            $rules['branch_name'] = ['nullable', 'string', 'exists:branches,name'];
+        }
+
+        $validated = $request->validate($rules);
+        
+        $data = $this->service->getIndexData($validated);
+        
         return view('users.index', $data);
     }
 

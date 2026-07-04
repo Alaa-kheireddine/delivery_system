@@ -3,6 +3,7 @@
         <table class="table table-hover mb-0" id="mainTable">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Name</th>
                     <th>Branch</th>
                     <th>Role</th>
@@ -20,6 +21,9 @@
             <tbody>
                 @forelse ($users as $user)
                     <tr>
+                        <td class="text-muted small">
+                            #{{ $user->id }}
+                        </td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->branch->name ?? '-' }}</td>
                         <td>{{ $user->role->name }}</td>
@@ -114,10 +118,10 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="12" class="text-center py-5">
                             <div>
-                                <i class="bi bi-buildings fs-1 d-block mb-2 text-muted"></i>
-                                <div class="fw-semibold">No branches found.</div>
+                                <i class="bi bi-people fs-1 d-block mb-2 text-muted"></i>
+                                <div class="fw-semibold">No users found.</div>
                             </div>
                         </td>
                     </tr>
@@ -127,7 +131,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="card-footer d-flex justify-content-between align-items-center">
+    <div class="card-footer d-flex justify-content-between align-items-center mt-2 mb-2 ms-2">
         <small class="text-muted">
             Showing {{ $users->firstItem() ?? 0 }}
             to {{ $users->lastItem() ?? 0 }}

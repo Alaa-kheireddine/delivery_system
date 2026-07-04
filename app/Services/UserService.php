@@ -23,14 +23,9 @@ class UserService
         //
     }
 
-    public function getIndexData(){
-        $users = User::with(['role', 'branch'])
-                    ->whereHas('role', function ($query) {
-                        $query->where('name', '!=', 'admin');
-                    })
-                    ->visibleTo(Auth::user())
-                    ->orderBy('id')
-                    ->paginate(15);
+    public function getIndexData(array $validated){
+        $users = $this->applyFilters($validated);
+
         $branches = Branch::orderBy('id')
                     ->get();
         $roles = Role::orderBy('id')
@@ -194,5 +189,69 @@ class UserService
             'success' => true,
             'message' => 'User deactivated successfully.',
         ];
+    }
+
+    // Helper Methods
+
+    // apply filters to users
+
+    private function applyFilters(array $validated){
+        $query = User::query()
+            ->with(['role', 'branch']);
+
+        if (!empty($validated['search'])) {
+            $search = $validated['search'];
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($validated['role_name'])) {
+            $query->whereHas('role', function ($q) use ($validated) {
+                $q->where('name', $validated['role_name']);
+            });
+        }
+
+        if (!empty($validated['branch_name'])) {
+            $query->whereHas('branch', function ($q) use ($validated) {
+                $q->where('name', $validated['branch_name']);
+            });
+        }
+
+        if (!empty($validated['status'])) {
+            if ($validated['status'] === 'active') {
+                $query->where('is_active', true);
+            }
+
+            if ($validated['status'] === 'inactive') {
+                $query->where('is_active', false);
+            }
+        }
+
+        if (!empty($validated['password_status'])) {
+            if ($validated['password_status'] === 'must_change') {
+                $query->where('must_change_password', true);
+            }
+
+            if ($validated['password_status'] === 'changed') {
+                $query->whereNotNull('password_changed_at');
+            }
+
+            if ($validated['password_status'] === 'not_changed') {
+                $query->whereNull('password_changed_at')
+                    ->where('must_change_password', false);
+            }
+        }
+
+        $users = $query
+            ->visibleTo(Auth::user())
+            ->orderBy('id', 'desc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return $users;
     }
 }

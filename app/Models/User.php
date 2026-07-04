@@ -84,10 +84,20 @@ class User extends Authenticatable
     public function scopeVisibleTo($query, User $authUser)
     {
         if ($authUser->role->name === 'admin') {
-            return $query;
+            return $query->whereHas('role', function ($q) {
+                $q->where('name', '!=', 'admin');
+            });
         }
 
-        return $query->where('branch_id', $authUser->branch_id);
+        if ($authUser->role->name === 'manager') {
+            return $query
+                ->where('branch_id', $authUser->branch_id)
+                ->whereHas('role', function ($q) {
+                    $q->whereNotIn('name', ['admin', 'manager']);
+                });
+        }
+
+        return $query->where('id', $authUser->id);
     }
 
 }

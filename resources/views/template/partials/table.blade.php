@@ -160,7 +160,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="card-footer d-flex justify-content-between align-items-center">
+    <div class="card-footer d-flex justify-content-between align-items-center mt-2 mb-2 ms-2">
         <small class="text-muted">
             Showing {{ $branches->firstItem() ?? 0 }}
             to {{ $branches->lastItem() ?? 0 }}

@@ -46,6 +46,8 @@
     @include('users.partials.header')
 
     <div class="card-box p-0">
+        <!-- Filters -->
+         @include('users.partials.filters', ['branches' => $branches, 'roles' => $roles])
         <!-- Table -->
         @include('users.partials.table', ["users" => $users])
     </div>
