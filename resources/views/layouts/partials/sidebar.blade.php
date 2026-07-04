@@ -144,10 +144,12 @@
                 </button>
 
                 <div class="sidebar-submenu">
+                    @can('viewAny', App\Models\Branch::class)
                     <a href="{{ route('branches.index') }}"
                        class="sidebar-sublink {{ request()->routeIs('branches.*') ? 'active' : '' }}">
                         Branches
                     </a>
+                    @endcan
 
                     <a href="#"
                        class="sidebar-sublink {{ request()->routeIs('shippers.*') ? 'active' : '' }}">
