@@ -59,52 +59,13 @@
     {{-- Menu --}}
     <nav class="sidebar-menu">
 
-    <!-- class active -->
-    <a href="{{ route('dashboard.index') }}" class="sidebar-link "> 
-        <i class="bi bi-house"></i>
-        <span>Dashboard</span>
-    </a>
+        <a href="{{ route('dashboard.index') }}"
+            class="sidebar-link {{ request()->routeIs('dashboard.index') ? 'active' : '' }} "> 
+            <i class="bi bi-house"></i>
+            <span>Dashboard</span>
+        </a>
 
-    {{-- Shipments Dropdown --}}
-    <div class="sidebar-dropdown">
-        <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-            <i class="bi bi-box-seam"></i>
-            <span>Shipments</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </button>
-
-        <div class="sidebar-submenu">
-            {{-- route('shipments.index') --}}
-            <a href="#" class="sidebar-sublink">All Shipments</a>
-
-            {{-- route('shipments.pending') --}}
-            <a href="#" class="sidebar-sublink">Pending Shipments</a>
-
-            {{-- route('shipments.active') --}}
-            <a href="#" class="sidebar-sublink">Active Shipments</a>
-
-            {{-- route('shipments.delivered') --}}
-            <a href="#" class="sidebar-sublink">Delivered Shipments</a>
-
-            {{-- route('shipments.cancelled') --}}
-            <a href="#" class="sidebar-sublink">Cancelled Shipments</a>
-
-            {{-- route('shipments.trashed') --}}
-            <a href="#" class="sidebar-sublink">Deleted Shipments</a>
-        </div>
-    </div>
-
-        {{-- Work --}}
-        <div class="sidebar-dropdown {{ $workOpen ? 'open' : '' }}">
-            <button class="sidebar-link sidebar-dropdown-btn"
-                    type="button"
-                    onclick="toggleSidebarDropdown(this)">
-                <i class="bi bi-briefcase"></i>
-                <span>Work</span>
-                <i class="bi bi-chevron-down ms-auto"></i>
-            </button>
-
-        {{-- Shipments --}}
+        {{-- Shipments Dropdown --}}
         <div class="sidebar-dropdown {{ $shipmentsOpen ? 'open' : '' }}">
             <button class="sidebar-link sidebar-dropdown-btn {{ $shipmentsOpen ? 'active' : '' }}"
                     type="button"
@@ -147,48 +108,23 @@
             </div>
         </div>
 
+        {{-- Work --}}
+        <div class="sidebar-dropdown {{ $workOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-briefcase"></i>
+                <span>Work</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
+        </div>
         {{-- Management --}}
-
         @php
             $canViewManagement =
                 auth()->user()->can('viewAny', App\Models\Branch::class);
                 // || auth()->user()->can('viewAny', App\Models\Shipper::class)
                 // || auth()->user()->can('viewAny', App\Models\Customer::class);
         @endphp
-        @if($canViewManagement)
-            <div class="sidebar-dropdown {{ $managementOpen ? 'open' : '' }}">
-                <button class="sidebar-link sidebar-dropdown-btn "
-                        type="button"
-                        onclick="toggleSidebarDropdown(this)">
-                    <i class="bi bi-diagram-3"></i>
-                    <span>Management</span>
-                    <i class="bi bi-chevron-down ms-auto"></i>
-                </button>
-
-            <div class="sidebar-submenu">
-                <a href="#"
-                   class="sidebar-sublink {{ request()->routeIs('missions.*') ? 'active' : '' }}">
-                    My Missions
-                </a>
-
-                <a href="#"
-                   class="sidebar-sublink {{ request()->routeIs('shipments.active') ? 'active' : '' }}">
-                    My Active Shipments
-                </a>
-            </div>
-        </div>
-    @endif
-
-        {{-- Finance --}}
-        <div class="sidebar-dropdown {{ $financeOpen ? 'open' : '' }}">
-            <button class="sidebar-link sidebar-dropdown-btn"
-                    type="button"
-                    onclick="toggleSidebarDropdown(this)">
-                <i class="bi bi-wallet"></i>
-                <span>Finance</span>
-                <i class="bi bi-chevron-down ms-auto"></i>
-            </button>
-
         {{-- Management --}}
         @if (auth()->user()->role->name === 'admin' || auth()->user()->role->name === 'manager')
             <div class="sidebar-dropdown {{ $managementOpen ? 'open' : '' }}">
@@ -253,21 +189,6 @@
                 </a>
             </div>
         </div>
-    </div>
-
-        {{-- Reports --}}
-        <div class="sidebar-dropdown {{ $reportsOpen ? 'open' : '' }}">
-            <button class="sidebar-link sidebar-dropdown-btn"
-                    type="button"
-                    onclick="toggleSidebarDropdown(this)">
-                <i class="bi bi-graph-up-arrow"></i>
-                <span>Reports</span>
-                <i class="bi bi-chevron-down ms-auto"></i>
-            </button>
-
-        <div class="sidebar-submenu">
-            {{-- route('reports.index') --}}
-            <a href="#" class="sidebar-sublink">Reports Overview</a>
 
         {{-- Reports --}}
         <div class="sidebar-dropdown {{ $reportsOpen ? 'open' : '' }}">
@@ -296,17 +217,6 @@
                 </a>
             </div>
         </div>
-    </div>
-
-        {{-- System --}}
-        <div class="sidebar-dropdown {{ $systemOpen ? 'open' : '' }}">
-            <button class="sidebar-link sidebar-dropdown-btn"
-                    type="button"
-                    onclick="toggleSidebarDropdown(this)">
-                <i class="bi bi-gear"></i>
-                <span>System</span>
-                <i class="bi bi-chevron-down ms-auto"></i>
-            </button>
 
         {{-- System --}}
         <div class="sidebar-dropdown {{ $systemOpen ? 'open' : '' }}">
@@ -340,7 +250,6 @@
                 </a>
             </div>
         </div>
-    </div>
 
         {{-- Administration --}}
         @php
@@ -389,7 +298,8 @@
     <div class="sidebar-footer p-3 border-top sidebar-border">
 
         <a href="{{ route('profile.show') }}"
-           class="d-flex align-items-center gap-2 mb-3 text-decoration-none">
+           class="d-flex align-items-center gap-2 mb-3 text-decoration-none 
+                    {{ request()->routeIs('profile.show') ? ' sidebar-link active' : '' }}">
 
             <div class="avatar rounded-circle d-flex align-items-center justify-content-center fw-bold">
                 {{ mb_strtoupper(mb_substr(auth()->user()->name ?? 'U', 0, 1)) }}

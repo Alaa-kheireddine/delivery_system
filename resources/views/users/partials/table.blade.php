@@ -125,4 +125,17 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Pagination -->
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">
+            Showing {{ $users->firstItem() ?? 0 }}
+            to {{ $users->lastItem() ?? 0 }}
+            of {{ $users->total() }} results
+        </small>
+
+        <div class="pagination-wrapper">
+            {{ $users->links() }}
+        </div>
+    </div>
 </div>

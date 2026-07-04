@@ -97,6 +97,13 @@ body.sidebar-hidden .sidebar {
     font-weight: 700;
     border-left: 3px solid var(--blue);
 }
+
+.sidebar-link.profile.active {
+    background: #1f8a70;
+    color: #fff !important;
+    border-inline-start: 4px solid #7fffd4;
+}
+
 .sidebar-border {
     border-color: var(--sidebar-border) !important;
 }
