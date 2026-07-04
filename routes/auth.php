@@ -14,14 +14,22 @@ Route::middleware(['guest'])->group(function(){
         ->name('login.store');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'activate.user'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
+    Route::get('/force-change-password', [AuthController::class, 'showForcePasswordChangeForm'])
+        ->name('password.force-change');
+
+    Route::put('/force-change-password', [AuthController::class, 'forcePasswordChange'])
+        ->name('password.force-change.update');
+
     Route::get('/profile', [ProfileController::class, 'showProfile'])
-        ->name('profile.show');
+        ->name('profile.show')
+        ->middleware('password.changed');
 
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])
+        ->middleware('password.changed')
         ->name('profile.password.update');
 
 });

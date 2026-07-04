@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delivery System Login</title>
 
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-icons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+
     <style>
         * {
             box-sizing: border-box;
@@ -189,36 +192,66 @@
             <form method="POST" action="{{ route('login.store') }}">
                 @csrf
 
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="admin@example.com"
-                        required
-                    >
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email Address</label>
 
-                    @error('email')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            class="form-control @error('email') is-invalid @enderror"
+                            placeholder="admin@example.com"
+                            required
+                            autofocus
+                        >
+
+                        @error('email')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        required
-                    >
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Password</label>
 
-                    @error('password')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-lock"></i>
+                        </span>
+
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="form-control @error('password') is-invalid @enderror"
+                            placeholder="Enter password"
+                            required
+                        >
+
+                        <button
+                            class="btn btn-outline-secondary"
+                            type="button"
+                            onclick="togglePassword('password', this)"
+                        >
+                            <i class="bi bi-eye"></i>
+                        </button>
+
+                        @error('password')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
                 </div>
 
-                <button type="submit" class="login-button">
+                <button type="submit" class="btn btn-dark btn-lg w-100 fw-bold rounded-3">
                     Login
                 </button>
             </form>
@@ -231,5 +264,21 @@
 
 </div>
 
+<script>
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+    }
+</script>
 </body>
 </html>
