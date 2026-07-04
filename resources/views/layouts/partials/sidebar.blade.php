@@ -56,13 +56,15 @@
         </div>
     </div>
 
-    {{-- Missions Dropdown --}}
-    <div class="sidebar-dropdown">
-        <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-            <i class="bi bi-briefcase"></i>
-            <span>Work</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </button>
+        {{-- Work --}}
+        <div class="sidebar-dropdown {{ $workOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-briefcase"></i>
+                <span>Work</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
         <div class="sidebar-submenu">
             {{-- route('missions.index') --}}
@@ -73,15 +75,23 @@
         </div>
     </div>
 
-    {{-- Management Dropdown --}}
-    @if (auth()->user()->role->name === 'admin'
-        || auth()->user()->role->name ==='manager')
-        <div class="sidebar-dropdown">
-            <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-                <i class="bi bi-diagram-3"></i>
-                <span>Management</span>
-                <i class="bi bi-chevron-down ms-auto"></i>
-            </button>
+        {{-- Management --}}
+
+        @php
+            $canViewManagement =
+                auth()->user()->can('viewAny', App\Models\Branch::class);
+                // || auth()->user()->can('viewAny', App\Models\Shipper::class)
+                // || auth()->user()->can('viewAny', App\Models\Customer::class);
+        @endphp
+        @if($canViewManagement)
+            <div class="sidebar-dropdown {{ $managementOpen ? 'open' : '' }}">
+                <button class="sidebar-link sidebar-dropdown-btn "
+                        type="button"
+                        onclick="toggleSidebarDropdown(this)">
+                    <i class="bi bi-diagram-3"></i>
+                    <span>Management</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
 
             <div class="sidebar-submenu">
 
@@ -99,13 +109,15 @@
         </div>
     @endif
 
-    {{-- Finance Dropdown --}}
-    <div class="sidebar-dropdown">
-        <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-            <i class="bi bi-wallet"></i>
-            <span>Finance</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </button>
+        {{-- Finance --}}
+        <div class="sidebar-dropdown {{ $financeOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-wallet"></i>
+                <span>Finance</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
         <div class="sidebar-submenu">
             {{-- route('expenses.index') --}}
@@ -119,13 +131,15 @@
         </div>
     </div>
 
-    {{-- Reports Dropdown --}}
-    <div class="sidebar-dropdown">
-        <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-            <i class="bi bi-graph-up-arrow"></i>
-            <span>Reports</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </button>
+        {{-- Reports --}}
+        <div class="sidebar-dropdown {{ $reportsOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Reports</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
         <div class="sidebar-submenu">
             {{-- route('reports.index') --}}
@@ -139,13 +153,15 @@
         </div>
     </div>
 
-    {{-- System Dropdown --}}
-    <div class="sidebar-dropdown">
-        <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-            <i class="bi bi-gear"></i>
-            <span>System</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </button>
+        {{-- System --}}
+        <div class="sidebar-dropdown {{ $systemOpen ? 'open' : '' }}">
+            <button class="sidebar-link sidebar-dropdown-btn"
+                    type="button"
+                    onclick="toggleSidebarDropdown(this)">
+                <i class="bi bi-gear"></i>
+                <span>System</span>
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
 
         <div class="sidebar-submenu">
             {{-- route('recent-actions.index') --}}
@@ -162,28 +178,46 @@
         </div>
     </div>
 
-    {{-- Admin Dropdown --}}
-    <div class="sidebar-dropdown">
-        <button class="sidebar-link sidebar-dropdown-btn" type="button" onclick="toggleSidebarDropdown(this)">
-            <i class="bi bi-person-gear"></i>
-            <span>Admin</span>
-            <i class="bi bi-chevron-down ms-auto"></i>
-        </button>
+        {{-- Administration --}}
+        @php
+            $canViewAdministration =
+                auth()->user()->can('viewAny', App\Models\User::class);
+                // || auth()->user()->can('viewAny', App\Models\Shipper::class)
+                // || auth()->user()->can('viewAny', App\Models\Customer::class);
+        @endphp
+        @if($canViewAdministration)
+            <div class="sidebar-dropdown {{ $adminOpen ? 'open' : '' }}">
+                <button class="sidebar-link sidebar-dropdown-btn"
+                        type="button"
+                        onclick="toggleSidebarDropdown(this)">
+                    <i class="bi bi-person-gear"></i>
+                    <span>Administration</span>
+                    <i class="bi bi-chevron-down ms-auto"></i>
+                </button>
 
-        <div class="sidebar-submenu">
-            {{-- route('users.index') --}}
-            <a href="#" class="sidebar-sublink">Users</a>
+                <div class="sidebar-submenu">
+                    <a href="{{ route('users.index') }}"
+                       class="sidebar-sublink {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                        Users
+                    </a>
 
-            {{-- route('roles.index') --}}
-            <a href="#" class="sidebar-sublink">Roles</a>
+                    <a href="#"
+                       class="sidebar-sublink {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                        Roles
+                    </a>
 
-            {{-- route('permissions.index') --}}
-            <a href="#" class="sidebar-sublink">Permissions</a>
+                    <a href="#"
+                       class="sidebar-sublink {{ request()->routeIs('permissions.*') ? 'active' : '' }}">
+                        Permissions
+                    </a>
 
-            {{-- route('settings.index') --}}
-            <a href="#" class="sidebar-sublink">Settings</a>
-        </div>
-    </div>
+                    <a href="#"
+                       class="sidebar-sublink {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                        Settings
+                    </a>
+                </div>
+            </div>
+        @endif
 
 </nav>
 

@@ -29,12 +29,18 @@ class User extends Authenticatable
         'is_active',
         'branch_id',
         'role_id',
+        'must_change_password',
+        'temporary_password_expires_at',
+        'password_changed_at',
     ];
 
     protected $casts = [
         'password' => 'hashed',
         'is_active' => 'boolean',
         'salary' => 'decimal:2',
+        'must_change_password' => 'boolean',
+        'temporary_password_expires_at' => 'datetime',
+        'password_changed_at' => 'datetime',
     ];
 
     /**
@@ -73,6 +79,15 @@ class User extends Authenticatable
     }
     public function hasRole(string $role){
         return $this->role?->name === $role;
+    }
+
+    public function scopeVisibleTo($query, User $authUser)
+    {
+        if ($authUser->role->name === 'admin') {
+            return $query;
+        }
+
+        return $query->where('branch_id', $authUser->branch_id);
     }
 
 }
