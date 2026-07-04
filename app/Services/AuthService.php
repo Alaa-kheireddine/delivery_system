@@ -38,9 +38,17 @@ class AuthService
 
         Auth::login($user);
 
-
+        if ($user->must_change_password) {
+            return [
+                'success' => true,
+                'force_change_password' => true,
+                'message' => 'You must change your password.',
+            ];
+        }
+        
         return [
                 'success' => true,
+                'force_change_password' => false,
                 'message' => 'Logged in successfully.',
             ];
     }
@@ -69,6 +77,20 @@ class AuthService
         return [
             'success' => true,
             'message' => 'Password updated successfully.',
+        ];
+    }
+
+    public function forcePasswordChange(array $validated, User $user){
+        $user->update([
+            'password' => Hash::make($validated['password']),
+            'must_change_password' => false,
+            'temporary_password_expires_at' => null,
+            'password_changed_at' => now(),
+        ]);
+        
+        return [
+            'sucess' => true,
+            'message' => 'Password changed succefully.'
         ];
     }
 }

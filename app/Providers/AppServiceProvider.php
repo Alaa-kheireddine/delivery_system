@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\User;
 use App\Policies\BranchPolicy;
 use App\Policies\TestUsersPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -33,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         // Policies
         Gate::policy(User::class, TestUsersPolicy::class);
         Gate::policy(Branch::class, BranchPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
     }
 }
