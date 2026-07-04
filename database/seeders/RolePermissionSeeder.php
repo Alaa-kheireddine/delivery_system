@@ -19,7 +19,7 @@ class RolePermissionSeeder extends Seeder
         $accountant = Role::where('name', 'accountant')->first();
         $collector = Role::where('name', 'collector')->first();
         $deliveryAgent = Role::where('name', 'delivery_agent')->first();
-        $shipper = Role::where('name', 'shipper')->first();
+        $client = Role::where('name', 'client')->first();
 
         $allPermissions = Permission::pluck('id')->toArray();
 
@@ -30,9 +30,9 @@ class RolePermissionSeeder extends Seeder
 
             'users.view',
 
-            'shippers.view',
-            'shippers.create',
-            'shippers.update',
+            'clients.view',
+            'clients.create',
+            'clients.update',
 
             'shipments.view',
             'shipments.create',
@@ -70,12 +70,12 @@ class RolePermissionSeeder extends Seeder
 
         $deliveryAgent->permissions()->sync($deliveryAgentPermissions);
 
-        $shipperPermissions = Permission::whereIn('name', [
+        $clientPermissions = Permission::whereIn('name', [
             'shipments.view',
             'shipments.create',
             'dashboard.view',
         ])->pluck('id')->toArray();
 
-        $shipper->permissions()->sync($shipperPermissions);
+        $client->permissions()->sync($clientPermissions);
     }
 }

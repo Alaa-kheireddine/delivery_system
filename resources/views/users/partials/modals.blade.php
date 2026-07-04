@@ -88,35 +88,35 @@
                             </select>
                         </div>
 
-                        {{-- Shipper Extra Info --}}
-                        <div class="col-12 d-none" id="shipperFields">
+                        {{-- Client Extra Info --}}
+                        <div class="col-12 d-none" id="clientFields">
                             <hr>
 
                             <h6 class="fw-bold mb-3">
                                 <i class="bi bi-truck me-1"></i>
-                                Shipper Company Info
+                                Client Company Info
                             </h6>
 
                             <div class="row g-3">
 
                                 <div class="col-md-6">
                                     <label class="form-label">Company Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="shipper_company_name" class="form-control"
-                                           value="{{ old('shipper_company_name') }}"
+                                    <input type="text" name="client_company_name" class="form-control"
+                                           value="{{ old('client_company_name') }}"
                                            placeholder="Enter company name">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Company Phone</label>
-                                    <input type="text" name="shipper_company_phone" class="form-control"
-                                           value="{{ old('shipper_company_phone') }}"
+                                    <input type="text" name="client_company_phone" class="form-control"
+                                           value="{{ old('client_company_phone') }}"
                                            placeholder="Enter company phone">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Company Address</label>
-                                    <input type="text" name="shipper_company_address" class="form-control"
-                                           value="{{ old('shipper_company_address') }}"
+                                    <input type="text" name="client_company_address" class="form-control"
+                                           value="{{ old('client_company_address') }}"
                                            placeholder="Enter company address">
                                 </div>
 
@@ -173,17 +173,17 @@ document.addEventListener('DOMContentLoaded', function () {
         
         roleSelect.addEventListener('change', function(){
 
-            const shipperFields = document.getElementById('shipperFields');
+            const clientFields = document.getElementById('clientFields');
 
-            if (!shipperFields) return;
+            if (!clientFields) return;
 
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
             const roleName = selectedOption?.dataset.roleName?.toLowerCase();
 
-            if (roleName === 'shipper') {
-                shipperFields.classList.remove('d-none');
+            if (roleName === 'client') {
+                clientFields.classList.remove('d-none');
             } else {
-                shipperFields.classList.add('d-none');
+                clientFields.classList.add('d-none');
             }
 
         });

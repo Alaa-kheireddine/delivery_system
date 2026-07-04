@@ -55,7 +55,7 @@ class UserController extends Controller
 
             'role_id' => ['required', 'exists:roles,id'],
             'branch_id' => ['nullable', 'exists:branches,id'],
-            'shipper_id' => ['nullable', 'exists:shippers,id'],
+            'client_id' => ['nullable', 'exists:clients,id'],
 
             'is_active' => ['nullable', 'boolean'],
         ]);
@@ -81,7 +81,7 @@ class UserController extends Controller
 
             'role_id' => ['required', 'exists:roles,id'],
             'branch_id' => ['nullable', 'exists:branches,id'],
-            'shipper_id' => ['nullable', 'exists:shippers,id'],
+            'client_id' => ['nullable', 'exists:clients,id'],
 
         ]);
 

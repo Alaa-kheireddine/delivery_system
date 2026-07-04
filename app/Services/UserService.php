@@ -69,7 +69,7 @@ class UserService
                 // Ba3do ma ghayar password
                 'password_changed_at' => null,
             ]);
-            // hon b3d fi logic if(hwe shipper) lezem nsawe new record Shipper bl data li bteje
+            // hon b3d fi logic if(hwe client) lezem nsawe new record client bl data li bteje
 
             DB::commit();
         } catch(Throwable $e){
@@ -98,9 +98,9 @@ class UserService
                 'branch_id' => $validated['branch_id'] ?? null,
             ]);
 
-            // eza l role shipper
-            // if ($user->role?->name === 'shipper') {
-            //     Shipper::updateOrCreate(
+            // eza l role Client
+            // if ($user->role?->name === 'client') {
+            //     Client::updateOrCreate(
             //         ['user_id' => $user->id],
             //         [
             //             'branch_id' => $user->branch_id,
@@ -110,8 +110,8 @@ class UserService
             //         ]
             //     );
             // } else {
-                // Eza ken shipper abl w hala2 tghayar role, mn3attel shipper profile
-                // $user->shipper?->update([
+                // Eza ken client abl w hala2 tghayar role, mn3attel client profile
+                // $user->client?->update([
                 //     'is_active' => false,
                 // ]);
             // }
@@ -159,16 +159,16 @@ class UserService
             ];
         }
 
-        // eza howe shipper w 3ndo shipments b 2idna, eza laa, mn3atil l shipper profile 
-        if ($user->shipper) {
-            $hasActiveShipperShipments = Shipment::where('shipper_id', $user->shipper->id)
+        // eza howe client w 3ndo shipments b 2idna, eza laa, mn3atil l client profile 
+        if ($user->client) {
+            $hasActiveClientShipments = Shipment::where('client_id', $user->client->id)
                 ->whereNotIn('status', ['delivered', 'cancelled', 'returned'])
                 ->exists();
 
-            if ($hasActiveShipperShipments) {
+            if ($hasActiveClientShipments) {
                 return [
                     'success' => false,
-                    'message' => 'This shipper has active shipments. Reassign them before deactivating.',
+                    'message' => 'This client has active shipments. Reassign them before deactivating.',
                 ];
             }
         }
@@ -178,8 +178,8 @@ class UserService
                 'is_active' => false,
             ]);
 
-            if ($user->shipper) {
-                $user->shipper->update([
+            if ($user->client) {
+                $user->client->update([
                     'is_active' => false,
                 ]);
             }

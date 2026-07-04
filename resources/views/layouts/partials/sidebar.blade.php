@@ -8,7 +8,7 @@
 
     $managementOpen = request()->routeIs(
         'branches.*',
-        'shippers.*',
+        'clients.*',
         'customers.*',
         'shipment-assignments.*'
     );
@@ -122,7 +122,7 @@
         @php
             $canViewManagement =
                 auth()->user()->can('viewAny', App\Models\Branch::class);
-                // || auth()->user()->can('viewAny', App\Models\Shipper::class)
+                // || auth()->user()->can('viewAny', App\Models\Client::class)
                 // || auth()->user()->can('viewAny', App\Models\Customer::class);
         @endphp
         {{-- Management --}}
@@ -145,8 +145,8 @@
                     @endcan
 
                     <a href="#"
-                       class="sidebar-sublink {{ request()->routeIs('shippers.*') ? 'active' : '' }}">
-                        Shippers
+                       class="sidebar-sublink {{ request()->routeIs('clients.*') ? 'active' : '' }}">
+                        Clients
                     </a>
 
                     <a href="#"
@@ -255,7 +255,7 @@
         @php
             $canViewAdministration =
                 auth()->user()->can('viewAny', App\Models\User::class);
-                // || auth()->user()->can('viewAny', App\Models\Shipper::class)
+                // || auth()->user()->can('viewAny', App\Models\Client::class)
                 // || auth()->user()->can('viewAny', App\Models\Customer::class);
         @endphp
         @if($canViewAdministration)

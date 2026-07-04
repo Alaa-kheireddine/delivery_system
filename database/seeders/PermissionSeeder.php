@@ -29,11 +29,11 @@ class PermissionSeeder extends Seeder
             'roles.view',
             'roles.update_permissions',
 
-            'shippers.view',
-            'shippers.create',
-            'shippers.update',
-            'shippers.activate',
-            'shippers.deactivate',
+            'clients.view',
+            'clients.create',
+            'clients.update',
+            'clients.activate',
+            'clients.deactivate',
 
             'shipments.view',
             'shipments.create',

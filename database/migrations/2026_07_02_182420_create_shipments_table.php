@@ -119,7 +119,7 @@ return new class extends Migration
 | - الحالة الحالية للشحنة
 |
 | لا نخزن sender_name / sender_phone هنا لأن المرسل يأتي من:
-| shipment -> creator(user) -> shipper
+| shipment -> creator(user) -> client
 |
 | لا نخزن collected_at / delivered_at / ... هنا لأن كل تغيير status
 | يجب أن يسجل في جدول:
@@ -141,7 +141,7 @@ return new class extends Migration
 | payment_status:
 | pending   = لم يتم قبض COD بعد
 | collected = تم قبض COD من الزبون
-| settled   = تمت تصفية المبلغ مع shipper
+| settled   = تمت تصفية المبلغ مع client
 |
 | status flow:
 |
@@ -173,7 +173,7 @@ return new class extends Migration
 |
 | من يستخدم الحالات؟
 |
-| shipper:
+| client:
 | - يرى شحناته
 | - يمكنه إلغاء الشحنة فقط إذا كانت pending
 |

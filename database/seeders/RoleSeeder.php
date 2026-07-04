@@ -20,7 +20,7 @@ class RoleSeeder extends Seeder
             'warehouse',
             'collector',
             'delivery_agent',
-            'shipper',
+            'client',
         ];
 
         foreach ($roles as $role) {
