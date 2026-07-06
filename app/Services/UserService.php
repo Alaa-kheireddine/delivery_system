@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Branch;
+use App\Models\Client;
 use App\Models\Role;
 use App\Models\Shipment;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -31,20 +33,56 @@ class UserService
         $roles = Role::orderBy('id')
                     ->whereNot("name", "admin")
                     ->get();
+
+        // njib code e5er client la 7ata n7oto de8re lal admin b create user -> client
+        $lastClient = Client::orderByDesc('id')->first();
+        if (! $lastClient) {
+            $code = 'CL-0001';
+        } else {
+            $number = (int) str_replace('CL-', '', $lastClient->code);
+
+            $code = 'CL-' . str_pad($number + 1, 4, '0', STR_PAD_LEFT);
+        }
         
         return [
             'users' => $users,
             'branches' => $branches,
-            'roles' => $roles
+            'roles' => $roles,
+            'last_client_code' => $code, 
         ];
     }
 
-    public function store(array $validated){
+    public function store(array $validated, Role $role){
         try{
             DB::beginTransaction();
 
             // Temporary password li byetla3 lal admin marra wa7de bas
             $temporaryPassword = Str::password(12);
+            $client = null;
+
+            if($role->name === 'client'){
+               $validated['salary'] = null;
+               $validated['client_is_active'] = $validated['is_active'] ?? true;
+
+                $client = Client::create([
+                    'name' => $validated['client_name'],
+                    'code' => $validated['client_code'],
+                    'contact_person_name' => $validated['client_contact_person_name'] ?? null,
+                    'phone' => $validated['client_phone'] ?? null,
+                    'email' => $validated['client_email'] ?? null,
+                    'city' => $validated['client_city'] ?? null,
+                    'address' => $validated['client_address'] ?? null,
+                    'branch_id' => $validated['client_branch_id'] ?? null,
+                    'default_delivery_fee' => $validated['client_default_delivery_fee'],
+                    'current_balance' => 0,
+                    'total_client_earnings' => 0,
+                    'total_paid_amount' => 0,
+                    'is_active' => $validated['client_is_active'],
+                    'notes' => $validated['client_notes'] ?? null,
+                ]);
+            }
+
+            $client_id = $client->id ?? null;
 
             $user = User::create([
                 'name' => $validated['name'],
@@ -54,6 +92,7 @@ class UserService
 
                 'role_id' => $validated['role_id'],
                 'branch_id' => $validated['branch_id'] ?? null,
+                'client_id' => $client_id,
 
                 'is_active' => $validated['is_active'] ?? true,
 
@@ -69,7 +108,6 @@ class UserService
                 // Ba3do ma ghayar password
                 'password_changed_at' => null,
             ]);
-            // hon b3d fi logic if(hwe client) lezem nsawe new record client bl data li bteje
 
             DB::commit();
         } catch(Throwable $e){
@@ -83,11 +121,38 @@ class UserService
         ];
     }
 
-    public function update(array $validated, User $user)
+    public function update(array $validated, User $user, Role $role)
     {
-        DB::beginTransaction();
-
         try {
+
+            $user->loadMissing('role', 'client');
+
+            DB::beginTransaction();
+
+            $clientId = null;
+
+            if ($role->name === 'client') {
+                $validated['salary'] = null;
+
+                $client = Client::findOrFail($user->client_id);
+
+                $client->update([
+                    'name' => $validated['client_name'],
+                    'code' => $validated['client_code'],
+                    'contact_person_name' => $validated['client_contact_person_name'] ?? null,
+                    'phone' => $validated['client_phone'] ?? null,
+                    'email' => $validated['client_email'] ?? null,
+                    'city' => $validated['client_city'] ?? null,
+                    'address' => $validated['client_address'] ?? null,
+                    'branch_id' => $validated['client_branch_id'] ?? null,
+                    'default_delivery_fee' => $validated['client_default_delivery_fee'],
+                    'is_active' => $validated['is_active'] ?? true,
+                    'notes' => $validated['client_notes'] ?? null,
+                ]);
+
+                $clientId = $client->id;
+            }
+
             $user->update([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
@@ -96,29 +161,18 @@ class UserService
 
                 'role_id' => $validated['role_id'],
                 'branch_id' => $validated['branch_id'] ?? null,
-            ]);
+                'client_id' => $clientId,
 
-            // eza l role Client
-            // if ($user->role?->name === 'client') {
-            //     Client::updateOrCreate(
-            //         ['user_id' => $user->id],
-            //         [
-            //             'branch_id' => $user->branch_id,
-            //             'name' => $user->name,
-            //             'phone' => $user->phone,
-            //             'is_active' => $user->is_active,
-            //         ]
-            //     );
-            // } else {
-                // Eza ken client abl w hala2 tghayar role, mn3attel client profile
-                // $user->client?->update([
-                //     'is_active' => false,
-                // ]);
-            // }
+                'is_active' => $validated['is_active'] ?? true,
+            ]);
 
             DB::commit();
 
-            return $user;
+            return [
+                'success' => true,
+                'message' => 'User updated successfully.',
+                'user' => $user->fresh(['role', 'branch', 'client']),
+            ];
 
         } catch (Throwable $e) {
             DB::rollBack();
@@ -127,9 +181,14 @@ class UserService
     }
 
     public function activate(User $user){
-        return $user->update([
+        $user->update([
             'is_active' => true,
         ]);
+
+        return [
+            'success' => true,
+            'message' => 'User activated successfully.',
+        ];
     }
 
     public function deactivate(User $user){
@@ -140,7 +199,7 @@ class UserService
             ];
         }
 
-        if (auth()->id() === $user->id) {
+        if (Auth::user()->id === $user->id) {
             return [
                 'success' => false,
                 'message' => 'You cannot deactivate your own account.',
@@ -161,14 +220,14 @@ class UserService
 
         // eza howe client w 3ndo shipments b 2idna, eza laa, mn3atil l client profile 
         if ($user->client) {
-            $hasActiveClientShipments = Shipment::where('client_id', $user->client->id)
+            $hasActiveClientShipments = Shipment::where('created_by', $user->client->id)
                 ->whereNotIn('status', ['delivered', 'cancelled', 'returned'])
                 ->exists();
 
             if ($hasActiveClientShipments) {
                 return [
                     'success' => false,
-                    'message' => 'This client has active shipments. Reassign them before deactivating.',
+                    'message' => 'This client has active shipments. Complete or cancel them before deactivating.',
                 ];
             }
         }
@@ -191,13 +250,30 @@ class UserService
         ];
     }
 
+    public function resetPassword(User $user){
+        $temporaryPassword = Str::password(12);
+
+        $user->update([
+            'password' => Hash::make($temporaryPassword),
+            'must_change_password' => true,
+            'temporary_password_expires_at' => now()->addDay(),
+            'password_changed_at' => null,
+        ]);
+
+        return [
+            'success' => true,
+            'message' => 'Password reset successfully.',
+            'temporary_password' => $temporaryPassword
+        ];
+    }
+
     // Helper Methods
 
     // apply filters to users
 
     private function applyFilters(array $validated){
         $query = User::query()
-            ->with(['role', 'branch']);
+            ->with(['role', 'branch', 'client']);
 
         if (!empty($validated['search'])) {
             $search = $validated['search'];

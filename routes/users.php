@@ -22,5 +22,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate'])
         ->name('users.deactivate');
+
+    Route::put('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
+        ->name('users.reset-password');
 });
     

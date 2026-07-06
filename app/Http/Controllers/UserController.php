@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -13,8 +14,8 @@ class UserController extends Controller
 {
     public function __construct(private UserService $service)
     {}
-    public function index(Request $request){
-
+    public function index(Request $request)
+    {
         $this->authorize('viewAny', User::class);
 
         $rules = [
@@ -43,11 +44,13 @@ class UserController extends Controller
     //     return view('branches.show', $data);
     // }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $this->authorize('create', User::class);
 
-        $validated = $request->validate([
+        $rules = [
+            // User info
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:50'],
@@ -58,9 +61,31 @@ class UserController extends Controller
             'client_id' => ['nullable', 'exists:clients,id'],
 
             'is_active' => ['nullable', 'boolean'],
-        ]);
+        ];
 
-        $result = $this->service->store($validated);
+        $role = Role::findOrFail($request->role_id);
+
+        if($role->name === 'client'){
+            $rules += [
+                // Client info
+                'client_name' => ['required', 'string', 'max:255'],
+                'client_code' => ['required', 'string', 'min:7', 'unique:clients,code'],
+                'client_contact_person_name' => ['nullable', 'string', 'max:255'],
+                'client_phone' => ['nullable', 'string', 'max:50'],
+                'client_email' => ['nullable', 'email', 'max:255'],
+                'client_city' => ['nullable', 'string', 'max:255'],
+                'client_address' => ['nullable', 'string', 'max:255'],
+
+                'client_branch_id' => ['nullable', 'exists:branches,id'],
+                'client_default_delivery_fee' => ['required', 'numeric', 'min:0'],
+
+                'client_notes' => ['nullable', 'string'],
+            ];
+        }
+
+        $validated = $request->validate($rules);
+
+        $result = $this->service->store($validated, $role);
 
         return back()
             ->with('success', 'User created successfully.')
@@ -73,22 +98,71 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
-        $validated = $request->validate([
+        $role = Role::findOrFail($request->role_id);
+
+        $currentRoleName = $user->role->name;
+        $newRoleName = $role->name;
+
+        if ($currentRoleName !== 'client' && $newRoleName === 'client') {
+            return back()
+                ->with('error', 'You cannot convert an employee into a client. Create a new client user instead.');
+        }
+
+        if ($currentRoleName === 'client' && $newRoleName !== 'client') {
+
+            return back()
+                ->with('error', 'You cannot convert a client into an employee.');
+        }
+
+        $rules = [
+            // User info
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'email' => ['required', 
+                        'email', 
+                        'max:255', 
+                        Rule::unique('users', 'email')->ignore($user->id),
+                    ],
             'phone' => ['nullable', 'string', 'max:50'],
             'salary' => ['nullable', 'numeric', 'min:0'],
 
             'role_id' => ['required', 'exists:roles,id'],
             'branch_id' => ['nullable', 'exists:branches,id'],
             'client_id' => ['nullable', 'exists:clients,id'],
+        ];
 
-        ]);
+        if($role->name === 'client'){
+            $rules += [
+                // Client info
+                'client_name' => ['required', 'string', 'max:255'],
+                'client_code' => ['required', 
+                                'string', 
+                                'min:7', 
+                                Rule::unique('clients', 'code')->ignore($user->client_id)
+                            ],
+                'client_contact_person_name' => ['nullable', 'string', 'max:255'],
+                'client_phone' => ['nullable', 'string', 'max:50'],
+                'client_email' => ['nullable', 'email', 'max:255'],
+                'client_city' => ['nullable', 'string', 'max:255'],
+                'client_address' => ['nullable', 'string', 'max:255'],
 
-        $result = $this->service->update($validated, $user);
+                'client_default_delivery_fee' => ['required', 'numeric', 'min:0'],
 
+                'client_branch_id' => ['nullable', 'exists:branches,id'],
+
+                'client_notes' => ['nullable', 'string'],
+            ];
+        }
+
+        $validated = $request->validate($rules);
+
+        $result = $this->service->update($validated, $user, $role);
+
+        if($result['success']){
+            return back()
+                ->with('success', $result['message']);
+        }
         return back()
-            ->with('success', 'User updated successfully.');
+                ->with('error', $result['message']);
 
     }
 
@@ -96,9 +170,9 @@ class UserController extends Controller
     {
         $this->authorize('activate', $user);
         try {
-            $this->service->activate($user);
+            $result = $this->service->activate($user);
 
-            return back()->with('success', 'User status updated successfully.');
+            return back()->with('success', $result['message']);
         } catch (Throwable $e) {
             return back()->with('error', 'Something went wrong while updating the user status.');
         }
@@ -117,7 +191,18 @@ class UserController extends Controller
 
             return back()->with('success', $result['message']);
         } catch (Throwable $e) {
-            return back()->with('error', 'Something went wrong while updating the branch status.');
+            return back()->with('error', 'Something went wrong while updating the user status.');
+        }
+    }
+
+    public function resetPassword(User $user){
+        $result = $this->service->resetPassword($user);
+
+        if($result['success']){
+            return response()->json([
+                'message' => $result['message'],
+                'temporary_password' => $result['temporary_password'],
+            ]);
         }
     }
 

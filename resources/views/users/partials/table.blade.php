@@ -63,24 +63,36 @@
                                         'canUpdate' => auth()->user()->can('update', $user),
                                         'canDeactivate' => auth()->user()->can('deactivate', $user) && $user->is_active,
                                         'canActivate' => auth()->user()->can('activate', $user) && ! $user->is_active,
+                                        'canView' =>auth()->user()->can('view', $user) 
                                     ];
 
                                     $hasActions = in_array(true, $actions, true);
                                 @endphp
 
                                 @if ($hasActions)
+
+                                    @can('view', $user)    
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-info view-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#viewModal"
+
+                                            data-user='@json($user)'
+                                        >
+                                            <i class="bi bi-eye"></i>
+                                        </button>  
+                                    @endcan
+
                                     @can('update', $user)
-                                        <button class="btn btn-light btn-sm action-btn edit-btn"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#editModal"
-                                                data-id="{{ $user->id }}"
-                                                data-name="{{ $user->name }}"
-                                                data-phone="{{ $user->phone }}"
-                                                data-email="{{ $user->email }}"
-                                                data-role-id="{{ $user->role_id }}"
-                                                data-branch-id="{{ $user->branch_id }}"
-                                                data-status="{{ $user->is_active }}"
-                                                data-salary="{{ $user->salary }}">
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary edit-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editModal"
+
+                                            data-user='@json($user)'
+                                        >
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                     @endcan

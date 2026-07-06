@@ -64,12 +64,16 @@
     {{-- @include('users.partials.charts', $chartData) --}}
 
     <!-- Modals -->
-    @include('users.partials.modals', ['branches' => $branches, 'roles' => $roles])
+    @include('users.partials.modals', 
+                ['branches' => $branches, 
+                'roles' => $roles, 
+                'last_client_code' => $last_client_code])
 
 </div>
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('assets/js/sweetalert2@11.js') }}"></script>
     <script src="{{ asset('assets/js/pages/users.js') }}"></script>
     <script>
     function copyTemporaryPassword() {

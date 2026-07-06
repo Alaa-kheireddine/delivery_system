@@ -29,6 +29,7 @@ class User extends Authenticatable
         'is_active',
         'branch_id',
         'role_id',
+        'client_id',
         'must_change_password',
         'temporary_password_expires_at',
         'password_changed_at',
@@ -72,6 +73,10 @@ class User extends Authenticatable
 
     public function role(){
         return $this->belongsTo(Role::class);
+    }
+
+    public function client(){
+        return $this->belongsTo(Client::class);
     }
 
     public function hasPermission(string $permission){
