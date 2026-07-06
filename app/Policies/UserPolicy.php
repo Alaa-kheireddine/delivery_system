@@ -56,6 +56,10 @@ class UserPolicy
             return false;
         }
 
+        if ($authUser->role->name === 'admin') {
+            return true;
+        }
+
         return $authUser->id !== $targetUser->id;
     }
 
@@ -63,6 +67,10 @@ class UserPolicy
     {
         if (! $authUser->hasPermission('users.deactivate')) {
             return false;
+        }
+
+        if ($authUser->role->name === 'admin') {
+            return true;
         }
 
         return $authUser->id !== $targetUser->id;
