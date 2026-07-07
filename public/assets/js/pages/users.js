@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function(){
             document.getElementById('editSalary').value = user.salary ?? '';
 
             document.getElementById('editBranchID').value = user.branch_id ?? '';
+
             document.getElementById('editUserRole').value = user.role_id ?? '';
 
             const roleName = user.role?.name ?? '';
@@ -212,11 +213,21 @@ function toggleClientFields(roleSelectId, clientFieldsId, saveBtnId) {
     const selectedOption = roleSelect.options[roleSelect.selectedIndex];
     const roleName = selectedOption.dataset.optionRoleName;
 
+    const clientInputs = clientFields.querySelectorAll('input, select, textarea');
+
     if (roleName === 'client') {
         clientFields.classList.remove('d-none');
         saveBtn.innerHTML = 'Save User & Client';
+
+        clientInputs.forEach(input => {
+            input.disabled = false;
+        });
     } else {
         clientFields.classList.add('d-none');
         saveBtn.innerHTML = 'Save User';
+
+        clientInputs.forEach(input => {
+            input.disabled = true;
+        });
     }
 }

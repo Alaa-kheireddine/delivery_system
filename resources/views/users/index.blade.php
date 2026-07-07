@@ -52,17 +52,6 @@
         @include('users.partials.table', ["users" => $users])
     </div>
 
-    <!-- Stats -->
-    {{-- @can('viewAny', App\Models\Branch::class)
-        <div class="mt-5">
-            @include('users.partials.stats', 
-                    ["total_users" => $total_users,
-                    "total_active_users" => $total_active_users])
-        </div>
-    @endcan --}}
-
-    {{-- @include('users.partials.charts', $chartData) --}}
-
     <!-- Modals -->
     @include('users.partials.modals', 
                 ['branches' => $branches, 
