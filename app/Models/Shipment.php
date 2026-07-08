@@ -25,6 +25,7 @@ class Shipment extends Model
 
         'description',
 
+        // delivery_fee, ya l client bi7ota , ya bte5od default_delivery_fee mn l Client.default_delivery_fee
         'delivery_fee',
         'cod_amount',
         'payment_status',
@@ -47,7 +48,7 @@ class Shipment extends Model
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(Client::class, 'created_by');
     }
 
     public function deliveryAgent()

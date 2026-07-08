@@ -41,6 +41,7 @@
             </small>
         </div>
     @endif
+    
 
     <!-- Header -->
     @include('users.partials.header')

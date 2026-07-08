@@ -10,11 +10,11 @@ Route::middleware(['guest'])->group(function(){
     Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
     Route::post('/login', [AuthController::class, 'login'])
-        ->middleware('throttle:5,1')
+        ->middleware('throttle:3,1')
         ->name('login.store');
 });
 
-Route::middleware(['auth', 'activate.user'])->group(function () {
+Route::middleware(['auth', 'user.is_active'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('logout');
 
