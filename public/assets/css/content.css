@@ -1,34 +1,183 @@
 body {
-    background: #f6f8fb;
+    background: var(--app-bg);
+    color: var(--app-text);
     font-size: 14px;
+}
+h1, h2, h3, h4, h5, h6,
+.card-title,
+.page-header h4,
+.card-box h5,
+.card-box h6 {
+    color: var(--app-text) !important;
+}
+
+p,
+span,
+label,
+small {
+    color: inherit;
+}
+
+.text-muted {
+    color: var(--app-muted) !important;
+}
+
+
+/*  Profile */
+.info-box,
+.permission-box,
+.role-stat-box,
+.profile-info-box {
+    background: var(--app-card-2) !important;
+    color: var(--app-text) !important;
+    border: 1px solid var(--app-border);
+}
+/* ==========================================================================
+   SURFACES
+   ========================================================================== */
+.page-header,
+.card-box {
+    background: var(--app-card);
+    color: var(--app-text);
+    border-radius: 16px;
+    border: 1px solid var(--app-border);
+    box-shadow: var(--shadow);
 }
 
 .page-header {
-    background: #fff;
-    border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 4px 14px rgba(0,0,0,.04);
 }
 
-.card-box {
-    background: #fff;
-    border-radius: 16px;
-    border: 1px solid #eef0f4;
-    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+/* ==========================================================================
+   TABLES
+   ========================================================================== */
+.table {
+    --bs-table-bg: var(--app-card);
+    --bs-table-color: var(--app-text);
+    --bs-table-border-color: var(--app-border);
+    margin-bottom: 0;
 }
 
 .table thead th {
-    background: #f8fafc;
+    background: var(--app-card-2);
     font-weight: 600;
-    color: #475569;
+    color: var(--app-muted);
     white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-size: 12px;
+    border-bottom: 1px solid var(--app-border);
 }
 
 .table td {
     vertical-align: middle;
     white-space: nowrap;
+    color: var(--app-text);
 }
 
+.table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background: var(--app-card-2);
+}
+
+/* ==========================================================================
+   FORMS
+   ========================================================================== */
+.form-control,
+.form-select {
+    background-color: var(--app-card);
+    color: var(--app-text);
+    border-color: var(--app-border);
+    border-radius: 10px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--app-card);
+    color: var(--app-text);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem var(--accent-soft);
+}
+
+.form-control::placeholder {
+    color: var(--app-muted);
+}
+
+.filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--app-muted);
+    margin-bottom: 5px;
+}
+
+.action-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state {
+    display: none;
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--app-muted);
+}
+
+/* ==========================================================================
+   MODALS  (fixed: solid content + subtle frosted backdrop)
+   ========================================================================== */
+.modal-content {
+    background: var(--app-card);
+    color: var(--app-text);
+    border-radius: 18px;
+    border: 1px solid var(--app-border);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--app-border);
+}
+
+/* Frosted, semi-transparent overlay behind the (solid) modal */
+.modal-backdrop {
+    background-color: #0b1418;
+}
+
+.modal-backdrop.show {
+    opacity: 0.55;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+/* ==========================================================================
+   DROPDOWNS
+   ========================================================================== */
+.dropdown-menu {
+    background: var(--app-card);
+    border-color: var(--app-border);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+}
+
+.dropdown-item {
+    color: var(--app-text);
+    border-radius: 8px;
+}
+
+.dropdown-item:hover {
+    background: var(--app-card-2);
+    color: var(--app-text);
+}
+
+/* ==========================================================================
+   BADGES
+   ========================================================================== */
 .badge-soft-success {
     background: #dcfce7;
     color: #166534;
@@ -49,34 +198,29 @@ body {
     color: #1e40af;
 }
 
-.action-btn {
-    width: 34px;
-    height: 34px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+[data-bs-theme="dark"] .badge-soft-success {
+    background: rgba(34, 197, 94, 0.18);
+    color: #86efac;
 }
 
-.filter-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #64748b;
-    margin-bottom: 5px;
+[data-bs-theme="dark"] .badge-soft-warning {
+    background: rgba(245, 158, 11, 0.18);
+    color: #fcd34d;
 }
 
-.empty-state {
-    display: none;
-    padding: 50px 20px;
-    text-align: center;
-    color: #64748b;
+[data-bs-theme="dark"] .badge-soft-danger {
+    background: rgba(239, 68, 68, 0.18);
+    color: #fca5a5;
 }
 
-.modal-content {
-    border-radius: 18px;
-    border: none;
+[data-bs-theme="dark"] .badge-soft-info {
+    background: rgba(59, 130, 246, 0.18);
+    color: #93c5fd;
 }
 
-/* Mobile Responsive */
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
 @media (max-width: 768px) {
     body {
         font-size: 13px;
@@ -165,4 +309,3 @@ body {
         flex-wrap: wrap;
     }
 }
-    

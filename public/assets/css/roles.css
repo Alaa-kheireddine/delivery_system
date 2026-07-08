@@ -1,0 +1,173 @@
+/* ==========================================================================
+   ROLES PAGE
+   ========================================================================== */
+
+.role-card {
+    min-height: 100%;
+    background: var(--app-card);
+    color: var(--app-text);
+    border: 1px solid var(--app-border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    transition: .2s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg, var(--shadow));
+}
+
+.role-card h5,
+.role-card h6 {
+    color: var(--app-text) !important;
+}
+
+/* ==========================================================================
+   ACTION BUTTON
+   ========================================================================== */
+
+.role-actions-btn {
+    width: 34px;
+    height: 34px;
+    background: var(--app-card-2) !important;
+    color: var(--app-text) !important;
+    border: 1px solid var(--app-border) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.role-actions-btn:hover {
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
+}
+
+/* ==========================================================================
+   STATS
+   ========================================================================== */
+
+.role-stat {
+    background: var(--app-card-2);
+    border: 1px solid var(--app-border);
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.role-stat small {
+    display: block;
+    color: var(--app-muted);
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.role-stat strong {
+    display: block;
+    color: var(--app-text);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+/* ==========================================================================
+   PERMISSIONS
+   ========================================================================== */
+
+.permission-group-title {
+    display: block;
+    color: var(--app-muted) !important;
+    letter-spacing: .4px;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.permission-pill {
+    background: var(--app-card-2);
+    color: var(--app-text);
+    border: 1px solid var(--app-border);
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.permission-pill:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ==========================================================================
+   EMPTY
+   ========================================================================== */
+
+.role-empty-text {
+    color: var(--app-muted);
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   DROPDOWN FIX
+   ========================================================================== */
+
+.role-card .dropdown-menu {
+    background: var(--app-card);
+    border: 1px solid var(--app-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 8px;
+}
+
+.role-card .dropdown-item {
+    color: var(--app-text);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.role-card .dropdown-item:hover {
+    background: var(--app-card-2);
+    color: var(--app-text);
+}
+
+.role-card .dropdown-item.text-danger {
+    color: #dc3545 !important;
+}
+
+.role-card .dropdown-item.text-danger:hover {
+    background: rgba(220, 53, 69, .12);
+    color: #dc3545 !important;
+}
+
+/* ==========================================================================
+   DARK MODE
+   ========================================================================== */
+
+[data-bs-theme="dark"] .permission-pill:hover {
+    background: rgba(60, 158, 158, .18);
+}
+
+[data-bs-theme="dark"] .role-card .dropdown-item.text-danger {
+    color: #f87171 !important;
+}
+
+[data-bs-theme="dark"] .role-card .dropdown-item.text-danger:hover {
+    background: rgba(248, 113, 113, .14);
+    color: #fca5a5 !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 576px) {
+    .role-card {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .permission-pill {
+        font-size: 12px;
+        padding: 7px 11px;
+    }
+}

@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function(){
             document.getElementById('editAddress').value = this.dataset.address;
             document.getElementById('editPhone').value = this.dataset.phone;
 
-            document.getElementById("editForm").action = '/branches/'+ id +'/update';
+            document.getElementById("editForm").action = '/branches/'+ id;
         });
     });
 

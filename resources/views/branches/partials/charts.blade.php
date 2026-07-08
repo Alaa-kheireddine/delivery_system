@@ -39,9 +39,9 @@
 <script src="{{ asset('assets/js/chart.js') }}"></script>
 
 <script>
-    const chartData1 = @json($chartData);
+    const chartData = @json($chartData);
 
-    const chartData = {
+    const staticData = {
         branch_names: ['Beirut Branch', 'Tripoli Branch', 'Saida Branch'],
         branch_shipments: [12, 7, 4],
 

@@ -40,13 +40,13 @@
 
                                 @can('view', $branch)
                                     <a href="{{ route('branches.show', $branch) }}"
-                                        class="btn btn-light btn-sm action-btn">
+                                        class="btn btn-sm btn-outline-info view-btn">
                                             <i class="bi bi-eye"></i>
                                     </a>
                                 @endcan
 
                                 @can('update', $branch)
-                                    <button class="btn btn-light btn-sm action-btn edit-btn"
+                                    <button class="btn btn-sm btn-outline-primary edit-btn"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editModal"
                                             data-id="{{ $branch->id }}"

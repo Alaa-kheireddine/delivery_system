@@ -34,11 +34,11 @@
     <main class="main-area">
 
       <header class="topbar">
-            <button class="btn btn-light border shadow-sm sidebar-arrow-btn d-lg-none" onclick="openMobileSidebar()">
+            <button class="sidebar-arrow-btn d-lg-none" onclick="openMobileSidebar()">
                 <i class="bi bi-list"></i>
             </button>
 
-            <button class="btn btn-light border shadow-sm sidebar-arrow-btn desktop-open-sidebar-btn" onclick="showDesktopSidebar()">
+            <button class="sidebar-arrow-btn desktop-open-sidebar-btn" onclick="showDesktopSidebar()">
                 <i class="bi bi-arrow-right"></i>
             </button>
         </header>
