@@ -16,7 +16,7 @@ class BranchPolicy
     }
 
     public function viewAny(User $user){
-        return $user->role->name === 'admin' && $user->hasPermission("branches.view");
+        return $user->hasPermission("branches.view");
     }
     public function view(User $user, Branch $branch){
         // check if admin or manager
