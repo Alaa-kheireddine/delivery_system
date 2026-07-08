@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" >
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,6 +13,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/content.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/alert-toast.css') }}">
+
+    <script>
+        if (localStorage.getItem('desktop_sidebar') === 'hidden') {
+            document.documentElement.classList.add('sidebar-hidden');
+        }
+    </script>
     
     @yield('styles')
 </head>
@@ -60,6 +66,12 @@
     const savedTheme = localStorage.getItem('theme') || 'light';
     html.setAttribute('data-bs-theme', savedTheme);
 
+    const savedSidebar = localStorage.getItem('desktop_sidebar') || 'shown'; 
+
+    if (savedSidebar === 'hidden') {
+        document.body.classList.add('sidebar-hidden');
+    }
+
     function toggleTheme() {
       const currentTheme = html.getAttribute('data-bs-theme');
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -70,10 +82,12 @@
 
     function hideDesktopSidebar() {
       document.body.classList.add('sidebar-hidden');
+      localStorage.setItem('desktop_sidebar', 'hidden');
     }
 
     function showDesktopSidebar() {
       document.body.classList.remove('sidebar-hidden');
+      localStorage.setItem('desktop_sidebar', 'shown');
     }
 
     function openMobileSidebar() {

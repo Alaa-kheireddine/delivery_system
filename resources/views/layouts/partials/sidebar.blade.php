@@ -269,20 +269,19 @@
                 </button>
 
                 <div class="sidebar-submenu">
-                    <a href="{{ route('users.index') }}"
-                       class="sidebar-sublink {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                        Users
-                    </a>
+                    @can('viewAny', App\Models\User::class)
+                        <a href="{{ route('users.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                                Users
+                        </a>
+                    @endcan
 
-                    <a href="#"
-                       class="sidebar-sublink {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                        Roles
-                    </a>
-
-                    <a href="#"
-                       class="sidebar-sublink {{ request()->routeIs('permissions.*') ? 'active' : '' }}">
-                        Permissions
-                    </a>
+                    @can('viewAny', App\Models\Role::class)
+                        <a href="{{ route('roles.index') }}"
+                            class="sidebar-sublink {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                Roles
+                        </a>
+                    @endcan
 
                     <a href="#"
                        class="sidebar-sublink {{ request()->routeIs('settings.*') ? 'active' : '' }}">

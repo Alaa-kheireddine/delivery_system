@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // users.viewAny users.view // branches.view // shipments.view shipments.delete shipments.updateStatus
+            $table->string('group');
             $table->timestamps();
         });
     }

@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Branch;
+use App\Models\Role;
 use App\Models\User;
 use App\Policies\BranchPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\TestUsersPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -32,8 +34,9 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFour();
 
         // Policies
-        Gate::policy(User::class, TestUsersPolicy::class);
+        // Gate::policy(User::class, TestUsersPolicy::class);
         Gate::policy(Branch::class, BranchPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
     }
 }
