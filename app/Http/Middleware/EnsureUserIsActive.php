@@ -20,7 +20,7 @@ class EnsureUserIsActive
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-
+    
             return redirect()->route('login')->with('error', 'Your account is inactive. Please contact the admin.');
         }
         return $next($request);

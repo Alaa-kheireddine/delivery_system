@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'activate.user' => EnsureUserIsActive::class,
+            'user.is_active' => EnsureUserIsActive::class,
             'password.changed' => EnsurePasswordIsChanged::class,
         ]);
     })

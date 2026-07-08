@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function(){
         button.addEventListener('click', function () {
 
         const user = JSON.parse(this.dataset.user);
-
+        
         document.getElementById('viewID').textContent = user.id || '-';
         document.getElementById('viewName').textContent = user.name || '-';
         document.getElementById('viewEmail').textContent = user.email || '-';
@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', function(){
             document.getElementById('viewSalarySection').classList.add('d-none');
 
             document.getElementById('viewClientName').textContent = user.client?.name || '-';
-            document.getElementById('viewClientCode').textContent = user.client?.client_code || '-';
+            document.getElementById('viewClientCode').textContent = user.client?.code || '-';
             document.getElementById('viewClientPhone').textContent = user.client?.phone || '-';
             document.getElementById('viewClientCity').textContent = user.client?.city || '-';
             document.getElementById('viewClientAddress').textContent = user.client?.address || '-';
-            document.getElementById('viewClientDeliveryFee').textContent = user.client?.delivery_fee || '0.00';
-            document.getElementById('viewClientContactPerson').textContent = user.client?.contact_person || '-';
+            document.getElementById('viewClientDeliveryFee').textContent = user.client?.default_delivery_fee || '0.00';
+            document.getElementById('viewClientContactPerson').textContent = user.client?.contact_person_name || '-';
             document.getElementById('viewClientNotes').textContent = user.client?.notes || '-';
             document.getElementById('viewClientEmail').textContent = user.client?.email || '-';
 
@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
             if (roleName === 'client' && user.client) {
                 clientSection.classList.remove('d-none');
-
                 
                 document.getElementById('editClientCode').value = user.client.code ?? '';
                 document.getElementById('editClientName').value = user.client.name ?? '';

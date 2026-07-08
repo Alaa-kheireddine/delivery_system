@@ -71,7 +71,7 @@
 
                                 @if ($hasActions)
 
-                                    @can('view', $user)    
+                                    @can('view', $user)
                                         <button
                                             type="button"
                                             class="btn btn-sm btn-outline-info view-btn"
@@ -81,7 +81,7 @@
                                             data-user='@json($user)'
                                         >
                                             <i class="bi bi-eye"></i>
-                                        </button>  
+                                        </button>
                                     @endcan
 
                                     @can('update', $user)

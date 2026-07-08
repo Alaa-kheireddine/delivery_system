@@ -91,7 +91,6 @@ class UserController extends Controller
             ->with('success', 'User created successfully.')
             ->with('temporary_password', $result['temporary_password'])
             ->with('temporary_user_email', $result['user']->email);
-
     }
 
     public function update(Request $request, User $user){
@@ -205,6 +204,5 @@ class UserController extends Controller
             ]);
         }
     }
-
 
 }

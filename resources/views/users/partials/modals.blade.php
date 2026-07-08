@@ -57,6 +57,7 @@
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->id }}"
                                             data-role-name="{{ $role->name }}"
+                                            data-option-role-name="{{ $role->name }}"
                                             {{ old('role_id') == $role->id ? 'selected' : '' }}>
                                         {{ ucfirst($role->name) }}
                                     </option>

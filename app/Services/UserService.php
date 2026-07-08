@@ -48,7 +48,7 @@ class UserService
             'users' => $users,
             'branches' => $branches,
             'roles' => $roles,
-            'last_client_code' => $code, 
+            'last_client_code' => $code,
         ];
     }
 

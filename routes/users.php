@@ -6,10 +6,10 @@ use App\Http\Controllers\UserController;
 
 Route::middleware(['auth'])->group(function(){
     Route::get('/users', [UserController::class, 'index'])
-    ->name('users.index');
+        ->name('users.index');
 
-    Route::get('/users/{branch}', [UserController::class, 'show'])
-        ->name('users.show');
+    // Route::get('/users/{user}', [UserController::class, 'show'])
+    //     ->name('users.show');
 
     Route::post('/users', [UserController::class, 'store'])
         ->name('users.store');
