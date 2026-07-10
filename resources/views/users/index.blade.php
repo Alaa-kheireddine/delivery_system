@@ -63,7 +63,6 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('assets/js/sweetalert2@11.js') }}"></script>
     <script src="{{ asset('assets/js/pages/users.js') }}"></script>
     <script>
     function copyTemporaryPassword() {

@@ -1,119 +1,213 @@
 @extends('layouts.app')
 @section('content')
+
+<!-- Header -->
 <div class="card-box p-4 mb-4">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+    @include('components.breadcrumb', [
+        'items' => [
+            [
+                'label' => 'Users',
+                'url' => session('users_index_url', route('users.index')),
+            ],
+            [
+                'label' => 'Show',
+                'active' => true,
+            ],
+        ]
+    ])
 
-        <div class="d-flex align-items-center gap-3">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
 
-            <a href="{{ route('branches.index') }}"
-               class="btn btn-light btn-sm">
-                <i class="bi bi-arrow-left"></i>
-            </a>
-
+        <div class="d-flex align-items-start gap-3">
             <div>
-                <h4 class="mb-1">{{ $branch->name }}</h4>
+                <h4 class="mb-1">
+                    {{ ucwords($user->name) }} Profile
+                </h4>
+
                 <p class="text-muted mb-0">
-                    {{ $branch->city }} • {{ $branch->address }}
+                    Review account details, assigned role, branch access, security status, and activity.
                 </p>
             </div>
-
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex flex-wrap gap-2">
 
-            @if($branch->is_active)
-                <span class="badge bg-success-subtle text-success border border-success-subtle">
-                    Active
-                </span>
-            @else
-                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
-                    Inactive
-                </span>
-            @endif
-
+            @can('update', $user)
+                <a href="{{ route('users.edit', $user) }}"
+                   class="btn btn-outline-primary">
+                    <i class="bi bi-pencil me-1"></i>
+                    Edit User
+                </a>
+            @endcan
         </div>
 
     </div>
 </div>
 
+
+<!-- User Summary Card -->
 <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3">
-        <div class="card-box p-3">
-            <small class="text-muted">Total Shipments</small>
-            <h3 class="mb-0">{{ $total }}</h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-lg-3">
-        <div class="card-box p-3">
-            <small class="text-muted">Active Shipments</small>
-            <h3 class="mb-0">{{ $active }}</h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-lg-3">
-        <div class="card-box p-3">
-            <small class="text-muted">Delivered</small>
-            <h3 class="mb-0">{{ $delivered }}</h3>
-        </div>
-    </div>
-
-    <div class="col-6 col-lg-3">
-        <div class="card-box p-3">
-            <small class="text-muted">Pending</small>
-            <h3 class="mb-0">{{ $pending }}</h3>
-        </div>
-    </div>
-</div>
-
-<div class="row g-3 mb-4">
-    <div class="col-12 col-lg-4">
+    <div class="col-6 col-xl-3">
         <div class="card-box p-3 h-100">
-            <h6 class="fw-bold mb-3">Branch Information</h6>
-
-            <p><strong>Phone:</strong> {{ $branch->phone }}</p>
-            <p><strong>City:</strong> {{ $branch->city }}</p>
-            <p><strong>Address:</strong> {{ $branch->address }}</p>
-            <p><strong>Created:</strong> {{ $branch->created_at->format('d M Y') }}</p>
+            <small class="text-muted">Role</small>
+            <h5 class="mb-0">{{ ucwords($user->role?->name ?? 'No Role') }}</h5>
         </div>
     </div>
 
-    <div class="col-12 col-lg-8">
-        <div class="card-box p-3">
-            <h6 class="fw-bold mb-3">Recent Shipments</h6>
+    <div class="col-6 col-xl-3">
+        <div class="card-box p-3 h-100">
+            <small class="text-muted">Branch</small>
+            <h5 class="mb-0">{{ $user->branch?->name ?? 'No Branch' }}</h5>
+        </div>
+    </div>
 
-            <div class="table-responsive">
-                <table class="table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Tracking</th>
-                            <th>Receiver</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                        </tr>
-                    </thead>
+    <div class="col-6 col-xl-3">
+        <div class="card-box p-3 h-100">
+            <small class="text-muted">Account Status</small>
+            <h5 class="mb-0">
+                {{ $user->is_active ? 'Active' : 'Inactive' }}
+            </h5>
+        </div>
+    </div>
 
-                    <tbody>
-                        @forelse ($recentShipments as $shipment)
-                            <tr>
-                                <td><strong>{{ $shipment->tracking_number }}</strong></td>
-                                <td>{{ $shipment->receiver_name }}</td>
-                                <td>
-                                    <span class="badge bg-secondary text-dark">
-                                        {{ str_replace('_', ' ', ucfirst($shipment->status)) }}
-                                    </span>
-                                </td>
-                                <td>{{ $shipment->created_at->format('d M Y') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">no shipments yet.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+    <div class="col-6 col-xl-3">
+        <div class="card-box p-3 h-100">
+            <small class="text-muted">Password Status</small>
+            <h5 class="mb-0">
+                {{ $user->must_change_password ? 'Change Required' : 'Normal' }}
+            </h5>
+        </div>
+    </div>
+</div>
+
+<!-- User Personal Information -->
+<div class="card-box p-4 mb-4">
+    <h5 class="mb-4">Personal Information</h5>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <small class="text-muted">Full Name</small>
+            <div class="fw-semibold">{{ ucwords($user->name) }}</div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Email Address</small>
+            <div class="fw-semibold text-break">{{ $user->email }}</div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Phone</small>
+            <div class="fw-semibold">{{ $user->phone ?: '—' }}</div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Salary</small>
+            <div class="fw-semibold">
+                {{ $user->salary !== null ? '$'.number_format($user->salary, 2) : '—' }}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Created At</small>
+            <div class="fw-semibold">
+                {{ $user->created_at?->format('d M Y, h:i A') ?? '—' }}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Last Updated</small>
+            <div class="fw-semibold">
+                {{ $user->updated_at?->format('d M Y, h:i A') ?? '—' }}
             </div>
         </div>
     </div>
 </div>
+
+<!-- User Access Information -->
+<div class="card-box p-4 mb-4">
+    <h5 class="mb-4">Access Information</h5>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <small class="text-muted">Assigned Role</small>
+            <div class="fw-semibold">
+                {{ ucwords($user->role?->name ?? 'No Role') }}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <small class="text-muted">Assigned Branch</small>
+            <div class="fw-semibold">
+                {{ $user->branch?->name ?? 'No Branch' }}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <small class="text-muted">Linked Client</small>
+            <div class="fw-semibold">
+                {{ $user->client?->name ?? 'Not linked to a client' }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Security Information -->
+<div class="card-box p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h5 class="mb-1">Security Information</h5>
+            <p class="text-muted mb-0">
+                Password status and account security details.
+            </p>
+        </div>
+
+        @can('resetPassword', App\Models\User::class)
+            <a href="{{ route('users.edit', $user) }}"
+               class="btn btn-outline-warning">
+                <i class="bi bi-key me-1"></i>
+                Reset Password
+            </a>
+        @endcan
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <small class="text-muted">Must Change Password</small>
+
+            <div class="mt-1">
+                @if($user->must_change_password)
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">
+                        Required
+                    </span>
+                @else
+                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                        Not Required
+                    </span>
+                @endif
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Temporary Password Expires At</small>
+            <div class="fw-semibold">
+                {{ $user->temporary_password_expires_at?->format('d M Y, h:i A') ?? '—' }}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Password Changed At</small>
+            <div class="fw-semibold">
+                {{ $user->password_changed_at?->format('d M Y, h:i A') ?? 'Never changed' }}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <small class="text-muted">Account State</small>
+            <div class="fw-semibold">
+                {{ $user->is_active ? 'Active account' : 'Inactive account' }}
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

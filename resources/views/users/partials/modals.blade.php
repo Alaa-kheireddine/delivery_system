@@ -664,11 +664,13 @@
 
                 <div class="modal-footer">
 
-                    <button type="button"
-                            class="btn btn-outline-warning me-auto"
-                            id="resetPasswordButton">
-                        <i class="bi bi-key me-1"></i> Reset Password
-                    </button>
+                    @can('resetPassword', App\Models\User::class)
+                        <button type="button"
+                                class="btn btn-outline-warning me-auto"
+                                id="resetPasswordButton">
+                            <i class="bi bi-key me-1"></i> Reset Password
+                        </button>
+                    @endcan
                     
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" id="editSaveBtn" class="btn btn-primary">
@@ -704,6 +706,61 @@
                     Delete
                 </button>
             </div>
+
+        </div>
+    </div>
+</div>
+
+{{-- Reset Password Modal --}}
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form id="resetPasswordForm" method="POST">
+                @csrf
+                @method('PATCH')
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-3">
+                        Are you sure you want to reset password for
+                        <strong id="resetPasswordUserName"></strong>?
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label">New Password</label>
+                        <input type="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Enter new password"
+                               required>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password"
+                               name="password_confirmation"
+                               class="form-control"
+                               placeholder="Confirm new password"
+                               required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-warning">
+                        Reset Password
+                    </button>
+                </div>
+
+            </form>
 
         </div>
     </div>
