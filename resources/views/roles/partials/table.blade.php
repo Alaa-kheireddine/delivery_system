@@ -17,7 +17,7 @@
                             @if (auth()->user()->can('update', $role) || 
                                 auth()->user()->can('delete', $role)
                             )
-                                <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown">
+                                <button class="btn btn-light btn-sm rounded-circle role-actions-btn" data-bs-toggle="dropdown">
                                     <i class="bi bi-three-dots"></i>
                                 </button>
                             @endif
@@ -79,7 +79,7 @@
                         @forelse ($role->permissions->groupBy('group') as $group => $groupPermissions)
 
                             <div class="w-100 mb-2">
-                                <small class="text-muted fw-semibold text-uppercase">
+                                <small class="text-muted fw-semibold text-uppercase permission-group-title">
                                     {{ $group }}
                                 </small>
                             </div>
@@ -91,7 +91,7 @@
                             @endforeach
 
                         @empty
-                            <span class="text-muted small">
+                            <span class="role-empty-text">
                                 No permissions assigned yet.
                             </span>
                         @endforelse

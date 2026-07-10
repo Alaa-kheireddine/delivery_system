@@ -126,7 +126,6 @@
                 // || auth()->user()->can('viewAny', App\Models\Customer::class);
         @endphp
         {{-- Management --}}
-        @if (auth()->user()->role->name === 'admin' || auth()->user()->role->name === 'manager')
             <div class="sidebar-dropdown {{ $managementOpen ? 'open' : '' }}">
                 <button class="sidebar-link sidebar-dropdown-btn "
                         type="button"
@@ -144,7 +143,7 @@
                     </a>
                     @endcan
 
-                    <a href="#"
+                    <a href="{{ route('clients.index') }}"
                        class="sidebar-sublink {{ request()->routeIs('clients.*') ? 'active' : '' }}">
                         Clients
                     </a>
@@ -160,7 +159,6 @@
                     </a>
                 </div>
             </div>
-        @endif
 
         {{-- Finance --}}
         <div class="sidebar-dropdown {{ $financeOpen ? 'open' : '' }}">
