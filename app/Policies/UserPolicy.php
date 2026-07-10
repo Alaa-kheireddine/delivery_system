@@ -75,4 +75,9 @@ class UserPolicy
 
         return $authUser->id !== $targetUser->id;
     }
+
+    public function resetPassword(User $authUser): bool
+    {
+        return $authUser->hasPermission('users.reset_password');
+    }
 }
