@@ -11,6 +11,7 @@ Route::middleware(['auth','user.is_active', 'password.changed'])->group(function
     require __DIR__.'/branches.php';
     require __DIR__.'/users.php';
     require __DIR__.'/roles.php';
+    require __DIR__.'/clients.php';
 
 });
 

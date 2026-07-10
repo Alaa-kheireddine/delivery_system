@@ -3,6 +3,7 @@ body {
     color: var(--app-text);
     font-size: 14px;
 }
+
 h1, h2, h3, h4, h5, h6,
 .card-title,
 .page-header h4,
@@ -22,7 +23,6 @@ small {
     color: var(--app-muted) !important;
 }
 
-
 /*  Profile */
 .info-box,
 .permission-box,
@@ -32,6 +32,7 @@ small {
     color: var(--app-text) !important;
     border: 1px solid var(--app-border);
 }
+
 /* ==========================================================================
    SURFACES
    ========================================================================== */
@@ -129,8 +130,34 @@ small {
 }
 
 /* ==========================================================================
-   MODALS  (fixed: solid content + subtle frosted backdrop)
+   MODALS
    ========================================================================== */
+.modal {
+    z-index: 4000 !important;
+}
+
+.modal-backdrop {
+    z-index: 3990 !important;
+    background-color: #0b1418;
+}
+
+.modal-backdrop.show {
+    opacity: .35;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.modal-dialog,
+.modal-content {
+    position: relative;
+    z-index: 4001 !important;
+    pointer-events: auto !important;
+}
+
+.modal.show {
+    display: block !important;
+}
+
 .modal-content {
     background: var(--app-card);
     color: var(--app-text);
@@ -142,17 +169,6 @@ small {
 .modal-header,
 .modal-footer {
     border-color: var(--app-border);
-}
-
-/* Frosted, semi-transparent overlay behind the (solid) modal */
-.modal-backdrop {
-    background-color: #0b1418;
-}
-
-.modal-backdrop.show {
-    opacity: 0.55;
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
 }
 
 /* ==========================================================================
@@ -279,22 +295,6 @@ small {
         min-width: 900px;
     }
 
-    .modal-dialog {
-        margin: 10px;
-    }
-
-    .modal-content {
-        border-radius: 14px;
-    }
-
-    .modal-footer {
-        flex-direction: column;
-    }
-
-    .modal-footer .btn {
-        width: 100%;
-    }
-
     .toast-container {
         left: 10px;
         right: 10px;
@@ -307,5 +307,67 @@ small {
 
     .pagination {
         flex-wrap: wrap;
+    }
+
+    body.modal-open {
+        overflow: hidden !important;
+        padding-right: 0 !important;
+    }
+
+    .modal {
+        overflow-y: auto !important;
+        padding: 10px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-dialog {
+        margin: 0 auto !important;
+        max-width: calc(100vw - 20px) !important;
+        min-height: auto !important;
+        height: auto !important;
+        display: block !important;
+        pointer-events: auto !important;
+    }
+
+    .modal-content {
+        max-height: calc(100dvh - 20px);
+        overflow: hidden;
+        border-radius: 14px;
+        pointer-events: auto !important;
+    }
+
+    .modal-body {
+        overflow-y: auto !important;
+        max-height: calc(100dvh - 150px);
+        -webkit-overflow-scrolling: touch;
+        pointer-events: auto !important;
+    }
+
+    .modal-header {
+        flex-shrink: 0;
+    }
+
+    .modal-footer {
+        flex-shrink: 0;
+        position: sticky;
+        bottom: 0;
+        background: var(--app-card);
+        border-top: 1px solid var(--app-border);
+        padding: 10px;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* Sidebar should stay below modal */
+@media (max-width: 991px) {
+    .sidebar {
+        z-index: 2000 !important;
+    }
+
+    .sidebar-backdrop {
+        z-index: 1990 !important;
     }
 }

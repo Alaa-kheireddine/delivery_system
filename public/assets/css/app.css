@@ -277,7 +277,7 @@ body.sidebar-hidden .sidebar {
 }
 
 .topbar {
-    height: 48px;
+    height: 70px;
     flex-shrink: 0;
     background: transparent;
     border-bottom: 0;
@@ -424,4 +424,47 @@ body.sidebar-hidden .desktop-open-sidebar-btn {
         position: relative;
         z-index: 1;
     }
+
+    body.modal-open {
+        overflow: hidden !important;
+    }
+
+    body.modal-open .app-layout,
+    body.modal-open .main-area {
+        overflow: visible !important;
+    }
+
+    body.modal-open .sidebar,
+    body.modal-open .sidebar-backdrop {
+        display: none !important;
+    }
+
+    body.modal-open .modal {
+        z-index: 5000 !important;
+    }
+
+    body.modal-open .modal-backdrop {
+        z-index: 0 !important;
+    }
+
+    body.modal-open .modal-dialog,
+    body.modal-open .modal-content {
+        position: relative;
+        z-index: 5001 !important;
+        pointer-events: auto !important;
+    }
+}
+
+/* Bread Crumb */
+
+.breadcrumb {
+    background: transparent;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--bs-primary) !important;
+}
+
+.breadcrumb-item.active {
+    color: var(--bs-primary);
 }
