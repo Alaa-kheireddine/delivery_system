@@ -33,7 +33,7 @@ class RoleController extends Controller
         $this->authorize('create', Role::class);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name|regex:/^[a-z0-9_]+$/',
+            'name' => 'required|string|max:255|unique:roles,name',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id',
         ]);
