@@ -19,7 +19,7 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $rules = [
-            'search' => ['nullable', 'string', 'max:100'],
+            'search' => ['nullable', 'string', 'max:20'],
             'role_name' => ['nullable', 'string', 'exists:roles,name'],
             'status' => ['nullable', 'in:active,inactive'],
             'password_status' => ['nullable', 'in:must_change,changed,not_changed'],
@@ -36,13 +36,13 @@ class UserController extends Controller
         return view('users.index', $data);
     }
 
-    // public function show(Branch $branch){
-    //     $this->authorize('view', $branch);
+    public function show(User $user){
+        $this->authorize('view', $user);
 
-    //     $data = $this->service->getShowData($branch);
+        $data = $this->service->getShowData($user);
 
-    //     return view('branches.show', $data);
-    // }
+        return view('users.show', $data);
+    }
 
     public function store(Request $request)
     {
@@ -56,9 +56,9 @@ class UserController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'salary' => ['nullable', 'numeric', 'min:0'],
 
-            'role_id' => ['required', 'exists:roles,id'],
-            'branch_id' => ['nullable', 'exists:branches,id'],
-            'client_id' => ['nullable', 'exists:clients,id'],
+            'role_id' => ['required', 'integer','exists:roles,id'],
+            'branch_id' => ['nullable', 'integer','exists:branches,id'],
+            'client_id' => ['nullable', 'integer', 'exists:clients,id'],
 
             'is_active' => ['nullable', 'boolean'],
         ];
@@ -93,25 +93,31 @@ class UserController extends Controller
             ->with('temporary_user_email', $result['user']->email);
     }
 
+    public function edit(User $user){
+        $this->authorize('update', $user);
+
+        $data = $this->service->getEditData($user);
+
+        return view('users.edit', $data);
+    }
+
     public function update(Request $request, User $user){
 
         $this->authorize('update', $user);
 
-        $role = Role::findOrFail($request->role_id);
+        $role = $user->role;
 
-        $currentRoleName = $user->role->name;
-        $newRoleName = $role->name;
+        if ($request->role_id) {
+            $role = Role::findOrFail($request->role_id);
 
-        if ($currentRoleName !== 'client' && $newRoleName === 'client') {
-            return back()
-                ->with('error', 'You cannot convert an employee into a client. Create a new client user instead.');
+            if ($role->name === 'client') {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Employees cannot be converted into clients.');
+            }
         }
 
-        if ($currentRoleName === 'client' && $newRoleName !== 'client') {
-
-            return back()
-                ->with('error', 'You cannot convert a client into an employee.');
-        }
+        $role_id_is_required = $role->name === 'client' ? 'nullable' : 'required';
 
         $rules = [
             // User info
@@ -124,45 +130,24 @@ class UserController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'salary' => ['nullable', 'numeric', 'min:0'],
 
-            'role_id' => ['required', 'exists:roles,id'],
+            'role_id' => [$role_id_is_required, 'exists:roles,id'],
             'branch_id' => ['nullable', 'exists:branches,id'],
             'client_id' => ['nullable', 'exists:clients,id'],
         ];
 
-        if($role->name === 'client'){
-            $rules += [
-                // Client info
-                'client_name' => ['required', 'string', 'max:255'],
-                'client_code' => ['required', 
-                                'string', 
-                                'min:7', 
-                                Rule::unique('clients', 'code')->ignore($user->client_id)
-                            ],
-                'client_contact_person_name' => ['nullable', 'string', 'max:255'],
-                'client_phone' => ['nullable', 'string', 'max:50'],
-                'client_email' => ['nullable', 'email', 'max:255'],
-                'client_city' => ['nullable', 'string', 'max:255'],
-                'client_address' => ['nullable', 'string', 'max:255'],
-
-                'client_default_delivery_fee' => ['required', 'numeric', 'min:0'],
-
-                'client_branch_id' => ['nullable', 'exists:branches,id'],
-
-                'client_notes' => ['nullable', 'string'],
-            ];
-        }
-
         $validated = $request->validate($rules);
 
-        $result = $this->service->update($validated, $user, $role);
+        $validated['role_id'] = $role->id;
+
+        $result = $this->service->update($validated, $user);
 
         if($result['success']){
-            return back()
+            return redirect()
+                ->route('users.show', $user->id)
                 ->with('success', $result['message']);
         }
-        return back()
-                ->with('error', $result['message']);
 
+        return back()->with('error', $result['message']);
     }
 
     public function activate(User $user)
@@ -195,6 +180,9 @@ class UserController extends Controller
     }
 
     public function resetPassword(User $user){
+        
+        $this->authorize('resetPassword', $user);
+
         $result = $this->service->resetPassword($user);
 
         if($result['success']){
@@ -203,6 +191,7 @@ class UserController extends Controller
                 'temporary_password' => $result['temporary_password'],
             ]);
         }
+        return back()->with('error', 'Something went wrong while updating the user status.');
     }
 
 }

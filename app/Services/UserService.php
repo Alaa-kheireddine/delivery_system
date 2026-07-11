@@ -26,6 +26,11 @@ class UserService
     }
 
     public function getIndexData(array $validated){
+
+        // la no7faz e5er request 3a index page sar (la n7afiz 3ala filters)
+        
+        session(['users_index_url' => request()->fullUrl()]);
+
         $users = $this->applyFilters($validated);
 
         $branches = Branch::orderBy('id')
@@ -49,6 +54,21 @@ class UserService
             'branches' => $branches,
             'roles' => $roles,
             'last_client_code' => $code,
+        ];
+    }
+
+    public function getShowData(User $user)
+    {
+        return [
+            "user" => $user->load(['role', 'branch'])
+        ];
+    }
+
+    public function getEditData(User $user){
+        return [
+            "user" => $user->load(['branch', 'role']),
+            'branches' => Branch::orderBy('id')->get(),
+            'roles' => Role::orderBy('id')->where('name', '!=', 'client')->get()
         ];
     }
 
@@ -121,37 +141,11 @@ class UserService
         ];
     }
 
-    public function update(array $validated, User $user, Role $role)
+    public function update(array $validated, User $user)
     {
         try {
 
             $user->loadMissing('role', 'client');
-
-            DB::beginTransaction();
-
-            $clientId = null;
-
-            if ($role->name === 'client') {
-                $validated['salary'] = null;
-
-                $client = Client::findOrFail($user->client_id);
-
-                $client->update([
-                    'name' => $validated['client_name'],
-                    'code' => $validated['client_code'],
-                    'contact_person_name' => $validated['client_contact_person_name'] ?? null,
-                    'phone' => $validated['client_phone'] ?? null,
-                    'email' => $validated['client_email'] ?? null,
-                    'city' => $validated['client_city'] ?? null,
-                    'address' => $validated['client_address'] ?? null,
-                    'branch_id' => $validated['client_branch_id'] ?? null,
-                    'default_delivery_fee' => $validated['client_default_delivery_fee'],
-                    'is_active' => $validated['is_active'] ?? true,
-                    'notes' => $validated['client_notes'] ?? null,
-                ]);
-
-                $clientId = $client->id;
-            }
 
             $user->update([
                 'name' => $validated['name'],
@@ -161,29 +155,36 @@ class UserService
 
                 'role_id' => $validated['role_id'],
                 'branch_id' => $validated['branch_id'] ?? null,
-                'client_id' => $clientId,
 
                 'is_active' => $validated['is_active'] ?? true,
             ]);
 
-            DB::commit();
-
             return [
                 'success' => true,
                 'message' => 'User updated successfully.',
-                'user' => $user->fresh(['role', 'branch', 'client']),
             ];
 
         } catch (Throwable $e) {
-            DB::rollBack();
-            throw $e;
+            return [
+                'success' => false,
+                'message' => 'Unable to update user.',
+            ];
         }
     }
 
     public function activate(User $user){
-        $user->update([
-            'is_active' => true,
-        ]);
+
+        DB::transaction(function () use ($user) {
+            $user->update([
+                'is_active' => true,
+            ]);
+
+            if ($user->client) {
+                $user->client->update([
+                    'is_active' => true,
+                ]);
+            }
+        });
 
         return [
             'success' => true,
@@ -206,7 +207,7 @@ class UserService
             ];
         }
 
-        // eza hwe mwazaf, w fi shipments men3atyin elo 
+        // eza hwe mwazaf, w fi shipments men3atyin elo
         $hasActiveAgentShipments = Shipment::where('delivery_agent_id', $user->id)
             ->whereNotIn('status', ['delivered', 'cancelled', 'returned'])
             ->exists();
@@ -221,7 +222,7 @@ class UserService
         // eza howe client w 3ndo shipments b 2idna, eza laa, mn3atil l client profile 
         if ($user->client) {
             $hasActiveClientShipments = Shipment::where('created_by', $user->client->id)
-                ->whereNotIn('status', ['delivered', 'cancelled', 'returned'])
+                ->whereNotIn('status', ['pending' ,'delivered', 'cancelled', 'returned'])
                 ->exists();
 
             if ($hasActiveClientShipments) {
@@ -273,7 +274,10 @@ class UserService
 
     private function applyFilters(array $validated){
         $query = User::query()
-            ->with(['role', 'branch', 'client']);
+                ->with(['role:id,name', 
+                        'branch:id,name', 
+                        'client'
+                        ]);
 
         if (!empty($validated['search'])) {
             $search = $validated['search'];
