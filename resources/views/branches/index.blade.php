@@ -16,13 +16,13 @@
     </div>
 
     <!-- Stats -->
-    @can('viewAny', App\Models\Branch::class)
+    @if(Auth::user()->role->name === 'admin')
         <div class="mt-5">
             @include('branches.partials.stats', 
                     ["total_branches" => $total_branches,
                     "total_active_branches" => $total_active_branches])
         </div>
-    @endcan
+    @endif
 
     @include('branches.partials.charts', $chartData)
 

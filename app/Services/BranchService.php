@@ -109,21 +109,25 @@ class BranchService
 
     public function deactivate(Branch $branch): bool
     {
+        return 
+        DB::transaction(function() use ($branch){
+            // lezem nzida
+            // $lockedBranch = Branch::query()->lockForUpdate()->findOrFail($branch->id);
+            $hasActiveShipments = $branch->shipments()
+                                ->whereNotIn('status', [
+                                    'delivered',
+                                    'cancelled',
+                                    'returned',
+                                ])
+                                ->exists();
+            if ($hasActiveShipments) {
+                return false;
+            }
 
-        $hasActiveShipments = $branch->shipments()
-                            ->whereNotIn('status', [
-                                'delivered',
-                                'cancelled',
-                                'returned',
-                            ])
-                            ->exists();
-        if ($hasActiveShipments) {
-            return false;
-        }
-
-        return $branch->update([
-            'is_active' => false,
-        ]);
+            return $branch->update([
+                'is_active' => false,
+            ]);
+        });
     }
     
 }
