@@ -59,45 +59,21 @@
                             
                             <div class="d-flex justify-content-end gap-2">
                                 @php
-                                    $actions = [
-                                        'canUpdate' => auth()->user()->can('update', $user),
-                                        'canDeactivate' => auth()->user()->can('deactivate', $user) && $user->is_active,
-                                        'canActivate' => auth()->user()->can('activate', $user) && ! $user->is_active,
-                                        'canView' =>auth()->user()->can('view', $user) 
-                                    ];
+                                    $canView = auth()->user()->can('view', $user);
+                                    $canDeactivate = auth()->user()->can('deactivate', $user) && $user->is_active;
+                                    $canActivate = auth()->user()->can('activate', $user) && ! $user->is_active;
 
-                                    $hasActions = in_array(true, $actions, true);
+                                    $hasActions = $canView || $canDeactivate || $canActivate;
                                 @endphp
 
                                 @if ($hasActions)
-
-                                    @can('view', $user)
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-info view-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#viewModal"
-
-                                            data-user='@json($user)'
-                                        >
+                                    @if($canView)
+                                        <a href="{{ route('users.show', $user) }}" class="btn btn-sm btn-outline-info view-btn">
                                             <i class="bi bi-eye"></i>
-                                        </button>
-                                    @endcan
+                                        </a>
+                                    @endif
 
-                                    @can('update', $user)
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-primary edit-btn"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editModal"
-
-                                            data-user='@json($user)'
-                                        >
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                    @endcan
-
-                                    @can('deactivate', $user)
+                                    @if ($canDeactivate)
                                         @if($user->is_active)
                                             <form action="{{ route('users.deactivate', $user) }}" method="post">
                                                 @csrf
@@ -107,9 +83,9 @@
                                                 </button>
                                             </form>
                                         @endif
-                                    @endcan
+                                    @endif
 
-                                    @can('activate', $user)
+                                    @if ($canActivate)
                                         @if(! $user->is_active)
                                             <form action="{{ route('users.activate', $user) }}" method="post">
                                                 @csrf
@@ -119,7 +95,7 @@
                                                 </button>
                                             </form>
                                         @endif
-                                    @endcan
+                                    @endif
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif

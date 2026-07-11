@@ -5,9 +5,8 @@
 
         <div class="d-flex align-items-center gap-3">
 
-            <a href="{{ route('branches.index') }}"
-               class="btn btn-light btn-sm">
-                <i class="bi bi-arrow-left"></i>
+            <a href="{{ route('branches.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
             </a>
 
             <div>

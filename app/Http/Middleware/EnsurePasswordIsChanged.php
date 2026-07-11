@@ -16,12 +16,29 @@ class EnsurePasswordIsChanged
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (
-            Auth::check() &&
-            Auth::user()->must_change_password
-        ) {
-            return redirect()->route('password.force-change');
+        $user = Auth::user();
+
+        if(! $user->must_change_password ){
+            return $next($request);
         }
-        return $next($request);
+
+        if ($user->temporary_password_expires_at?->isPast()) {
+            Auth::logout();
+
+            $session = $request->session();
+
+            $session->invalidate();
+            $session->regenerateToken();
+
+            return redirect()
+                ->route('login')
+                ->with('error', 'Temporary password expired.');
+        }
+
+        if ($request->routeIs('password.force-change', 'password.force-change.update', 'logout')) {
+            return $next($request);
+        }
+
+        return redirect()->route('password.force-change');
     }
 }
