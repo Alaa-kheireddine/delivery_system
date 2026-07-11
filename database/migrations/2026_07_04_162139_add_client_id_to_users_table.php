@@ -17,6 +17,8 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('clients')
                 ->nullOnDelete();
+            
+            $table->index('client_id');
         });
     }
 

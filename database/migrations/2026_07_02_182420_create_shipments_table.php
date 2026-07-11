@@ -76,20 +76,14 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('status');
-            $table->index('payment_status');
 
-            $table->index('branch_id');
-            $table->index('current_branch_id');
-            $table->index('delivery_agent_id');
-
-            $table->index('created_by');
-
-            $table->index(['branch_id', 'status']);
-            $table->index(['current_branch_id', 'status']);
+            $table->index('status', 'created_at');
+            $table->index('created_by', 'created_at');
+            $table->index('created_by', 'status');
+            $table->index('branch_id', 'status');
+            $table->index('current_branch_id', 'status');
+            $table->index('delivery_agent_id', 'status');
             $table->index(['destination_branch_id', 'status']);
-            $table->index(['delivery_agent_id', 'status']);
-            $table->index(['status', 'created_at']);
         });
     }
 

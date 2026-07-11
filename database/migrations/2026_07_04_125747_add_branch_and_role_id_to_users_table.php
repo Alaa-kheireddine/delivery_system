@@ -22,6 +22,10 @@ return new class extends Migration
                 ->after('branch_id')
                 ->constrained('roles')
                 ->restrictOnDelete();
+
+            $table->index('role_id');
+            $table->index('branch_id');
+
         });
     }
 
