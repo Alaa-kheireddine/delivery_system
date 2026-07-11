@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Policies\TestUsersPolicy;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -85,13 +83,14 @@ class User extends Authenticatable
     public function hasRole(string $role){
         return $this->role?->name === $role;
     }
-
     public function scopeVisibleTo($query, User $authUser)
     {
         if ($authUser->role->name === 'admin') {
-            return $query->whereHas('role', function ($q) {
-                $q->where('name', '!=', 'admin');
-            });
+            return $query
+                ->where('id', $authUser->id)
+                ->orWhereHas('role', function ($q) {
+                    $q->where('name', '!=', 'admin');
+                });
         }
 
         if ($authUser->role->name === 'manager') {

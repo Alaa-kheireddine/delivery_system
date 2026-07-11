@@ -28,11 +28,11 @@ class AuthController extends Controller
             return back()->withErrors(['email' => $result['message']]);
         }
 
+        $request->session()->regenerate();
+
         if ($result['force_change_password']) {
             return redirect()->route('password.force-change');
         }
-
-        $request->session()->regenerate();
 
         return redirect()->route('dashboard.index');
     }
