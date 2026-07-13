@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
@@ -38,11 +39,13 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $role = Role::create([
-            'name' => strtolower($validated['name']),
-        ]);
+        DB::transaction(function() use ($validated){
+            $role = Role::create([
+                'name' => strtolower($validated['name']),
+            ]);
 
-        $role->permissions()->sync($validated['permissions'] ?? []);
+            $role->permissions()->sync($validated['permissions'] ?? []);
+        });
 
         return redirect()
             ->route('roles.index')
@@ -60,11 +63,13 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $role->update([
-            'name' => strtolower($validated['name']),
-        ]);
+        DB::transaction(function () use ($role, $validated){
+            $role->update([
+                'name' => strtolower($validated['name']),
+            ]);
 
-        $role->permissions()->sync($validated['permissions'] ?? []);
+            $role->permissions()->sync($validated['permissions'] ?? []);
+        });
 
         return redirect()
             ->route('roles.index')
@@ -81,9 +86,12 @@ class RoleController extends Controller
                 ->with('error', 'Cannot delete this role because it has users assigned.');
         }
 
-        $role->permissions()->detach();
+        DB::transaction(function() use ($role){
+            // lock for update
+            $role->permissions()->detach();
 
-        $role->delete();
+            $role->delete();
+        });
 
         return redirect()
             ->route('roles.index')
