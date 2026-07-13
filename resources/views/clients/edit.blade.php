@@ -26,9 +26,6 @@
 
         <div class="d-flex align-items-center gap-3">
 
-            {{-- <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back
-            </a> --}}
             <div>
                 <h4 class="mb-1">{{ $client->name }} ( {{ $client->code }} )</h4>
                 <p class="text-muted mb-0">

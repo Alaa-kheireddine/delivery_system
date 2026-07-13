@@ -43,16 +43,12 @@
                         <td class="text-end">
                             <div class="d-flex justify-content-end gap-2">
 
-                                
-                                <a href="{{ route('clients.show', $client) }}"
-                                    class="btn btn-sm btn-outline-info view-btn">
-                                        <i class="bi bi-eye"></i>
-                                </a>
-                            
-                                <!-- <a href="{{ route('clients.edit', $client) }}"
-                                    class="btn btn-sm btn-outline-primary edit-btn">
-                                        <i class="bi bi-pencil"></i>
-                                </a> -->
+                                @can('view', $client)
+                                    <a href="{{ route('clients.show', $client) }}"
+                                        class="btn btn-sm btn-outline-info view-btn">
+                                            <i class="bi bi-eye"></i>
+                                    </a>
+                                @endcan
                                                                 
                             </div>
                         </td>

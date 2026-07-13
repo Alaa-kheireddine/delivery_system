@@ -36,7 +36,7 @@ class ClientService
 
     private function applyFilters(array $validated){
         $query = Client::query()
-            ->with(['branch', 'users', 'payments']);
+            ->with(['branch:id,name']);
 
         if (!empty($validated['search'])) {
             $search = $validated['search'];

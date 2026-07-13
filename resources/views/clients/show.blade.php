@@ -38,15 +38,17 @@
             </div>
 
             <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('clients.edit', $client) }}"
-                    class="btn btn-outline-primary">
-                        <i class="bi bi-pencil me-1"></i>
-                        Edit Client
-                </a>
+                @can('edit', $client)
+                    <a href="{{ route('clients.edit', $client) }}"
+                        class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i>
+                            Edit Client
+                    </a>
+                @endcan
                 <a href="#" class="btn btn-primary">
                     <i class="bi bi-truck me-1"></i> View Shipments
                 </a>
-                <a href=""
+                <a href="#"
                     class="btn btn-primary">
                         <i class="bi bi-cash-coin me-1"></i> View Payments
                 </a>

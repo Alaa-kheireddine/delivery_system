@@ -41,6 +41,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['client_id', 'payment_date']);
+            $table->index(['client_id', 'status']);
             $table->index(['client_id', 'created_at']);
         });
     }

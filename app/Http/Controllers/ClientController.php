@@ -16,6 +16,7 @@ class ClientController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Client::class);
         $rules = [
             'search' => ['nullable', 'string', 'max:100'],
             'status' => ['nullable', 'in:active,inactive'],
@@ -34,6 +35,7 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
+        $this->authorize('view', $client);
 
         $client->load(['branch']);
 
@@ -72,6 +74,8 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
+        $this->authorize('update', $client);
+
         $branches = Branch::orderBy('id')->get();
 
         return view('clients.edit', compact('client', 'branches'));
@@ -79,6 +83,8 @@ class ClientController extends Controller
 
     public function update(Request $request, Client $client)
     {
+        $this->authorize('update', $client);
+        
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'default_delivery_fee' => ['required', 'numeric', 'min:0'],
