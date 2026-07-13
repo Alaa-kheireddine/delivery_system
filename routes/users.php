@@ -25,6 +25,6 @@ Route::patch('/users/{user}/activate', [UserController::class, 'activate'])
 Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate'])
     ->name('users.deactivate');
 
-Route::put('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
+Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])
     ->name('users.reset-password');
     

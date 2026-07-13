@@ -186,10 +186,9 @@ class UserController extends Controller
         $result = $this->service->resetPassword($user);
 
         if($result['success']){
-            return response()->json([
-                'message' => $result['message'],
-                'temporary_password' => $result['temporary_password'],
-            ]);
+            return redirect()->route('users.index')
+                    ->with('success', $result['message'])
+                    ->with('temporary_password', $result['temporary_password']);
         }
         return back()->with('error', 'Something went wrong while updating the user status.');
     }

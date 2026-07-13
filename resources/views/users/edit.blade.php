@@ -151,24 +151,6 @@
                         Are you sure you want to reset password for
                         <strong>{{ $user->name }}</strong>?
                     </p>
-
-                    <div class="mb-3">
-                        <label class="form-label">New Password</label>
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               placeholder="Enter new password"
-                               required>
-                    </div>
-
-                    <div>
-                        <label class="form-label">Confirm Password</label>
-                        <input type="password"
-                               name="password_confirmation"
-                               class="form-control"
-                               placeholder="Confirm new password"
-                               required>
-                    </div>
                 </div>
 
                 <div class="modal-footer">
