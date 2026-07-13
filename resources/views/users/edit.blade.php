@@ -111,7 +111,7 @@
 
         <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 mt-5">
 
-            @can('resetPassword', App\Models\User::class)
+            @can('resetPassword', $user)
                 <button type="button"
                         class="btn btn-outline-warning me-auto"
                         data-bs-toggle="modal"

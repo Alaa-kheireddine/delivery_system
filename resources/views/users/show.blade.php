@@ -161,7 +161,7 @@
             </p>
         </div>
 
-        @can('resetPassword', App\Models\User::class)
+        @can('resetPassword', $user)
             <a href="{{ route('users.edit', $user) }}"
                class="btn btn-outline-warning">
                 <i class="bi bi-key me-1"></i>

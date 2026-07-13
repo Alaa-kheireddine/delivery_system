@@ -19,7 +19,7 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $rules = [
-            'search' => ['nullable', 'string', 'max:100'],
+            'search' => ['nullable', 'string', 'max:20'],
             'role_name' => ['nullable', 'string', 'exists:roles,name'],
             'status' => ['nullable', 'in:active,inactive'],
             'password_status' => ['nullable', 'in:must_change,changed,not_changed'],
@@ -56,9 +56,9 @@ class UserController extends Controller
             'phone' => ['nullable', 'string', 'max:50'],
             'salary' => ['nullable', 'numeric', 'min:0'],
 
-            'role_id' => ['required', 'exists:roles,id'],
-            'branch_id' => ['nullable', 'exists:branches,id'],
-            'client_id' => ['nullable', 'exists:clients,id'],
+            'role_id' => ['required', 'integer','exists:roles,id'],
+            'branch_id' => ['nullable', 'integer','exists:branches,id'],
+            'client_id' => ['nullable', 'integer', 'exists:clients,id'],
 
             'is_active' => ['nullable', 'boolean'],
         ];
@@ -94,7 +94,7 @@ class UserController extends Controller
     }
 
     public function edit(User $user){
-        $this->authorize('view', $user);
+        $this->authorize('update', $user);
 
         $data = $this->service->getEditData($user);
 
@@ -181,6 +181,8 @@ class UserController extends Controller
 
     public function resetPassword(User $user){
         
+        $this->authorize('resetPassword', $user);
+
         $result = $this->service->resetPassword($user);
 
         if($result['success']){

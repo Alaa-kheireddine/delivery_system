@@ -279,7 +279,6 @@ class UserService
                         'client'
                         ]);
 
-
         if (!empty($validated['search'])) {
             $search = $validated['search'];
 

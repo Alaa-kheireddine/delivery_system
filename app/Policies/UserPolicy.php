@@ -29,6 +29,10 @@ class UserPolicy
             return true;
         }
 
+        if($targetUser->role->name === 'admin'){
+            return false;
+        }
+
         return $authUser->branch_id === $targetUser->branch_id;
     }
 
@@ -46,6 +50,8 @@ class UserPolicy
         if ($authUser->role->name === 'admin') {
             return true;
         }
+
+        
 
         return $authUser->branch_id === $targetUser->branch_id;
     }
@@ -76,8 +82,26 @@ class UserPolicy
         return $authUser->id !== $targetUser->id;
     }
 
-    public function resetPassword(User $authUser): bool
+    public function resetPassword(User $authUser, User $targetUser): bool
     {
-        return $authUser->hasPermission('users.reset_password');
+        if (! $authUser->hasPermission('users.reset_password')) { 
+            return false; 
+        }
+
+        if ($authUser->role->name === 'admin') {
+            return true;
+        }
+
+        // m 7ada fi ysawe reset password la admin tene ela la ykoun kamen admin
+        if($targetUser->role->name === 'admin' && $authUser->role->name !== 'admin'){
+            return false;
+        }
+        
+        // Kawno howe mch admin, fa ma fi ysawe reset ella lali 3ndo bl branch 
+        if (! $authUser->branch_id || $authUser->branch_id !== $targetUser->branch_id) {
+            return false;
+        }
+
+        return false;
     }
 }

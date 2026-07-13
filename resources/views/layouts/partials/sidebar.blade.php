@@ -121,11 +121,12 @@
         {{-- Management --}}
         @php
             $canViewManagement =
-                auth()->user()->can('viewAny', App\Models\Branch::class);
-                // || auth()->user()->can('viewAny', App\Models\Client::class)
+                auth()->user()->can('viewAny', App\Models\Branch::class)
+                || auth()->user()->can('viewAny', App\Models\Client::class);
                 // || auth()->user()->can('viewAny', App\Models\Customer::class);
         @endphp
         {{-- Management --}}
+        @if ($canViewManagement)
             <div class="sidebar-dropdown {{ $managementOpen ? 'open' : '' }}">
                 <button class="sidebar-link sidebar-dropdown-btn "
                         type="button"
@@ -138,27 +139,30 @@
                 <div class="sidebar-submenu">
                     @can('viewAny', App\Models\Branch::class)
                     <a href="{{ route('branches.index') }}"
-                       class="sidebar-sublink {{ request()->routeIs('branches.*') ? 'active' : '' }}">
+                        class="sidebar-sublink {{ request()->routeIs('branches.*') ? 'active' : '' }}">
                         Branches
                     </a>
                     @endcan
 
+                    @can('viewAny', App\Models\Client::class)
                     <a href="{{ route('clients.index') }}"
-                       class="sidebar-sublink {{ request()->routeIs('clients.*') ? 'active' : '' }}">
+                        class="sidebar-sublink {{ request()->routeIs('clients.*') ? 'active' : '' }}">
                         Clients
                     </a>
+                    @endcan
 
                     <a href="#"
-                       class="sidebar-sublink {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                        class="sidebar-sublink {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                         Customers
                     </a>
 
                     <a href="#"
-                       class="sidebar-sublink {{ request()->routeIs('shipment-assignments.*') ? 'active' : '' }}">
+                        class="sidebar-sublink {{ request()->routeIs('shipment-assignments.*') ? 'active' : '' }}">
                         Assignments
                     </a>
                 </div>
             </div>
+        @endif
 
         {{-- Finance --}}
         <div class="sidebar-dropdown {{ $financeOpen ? 'open' : '' }}">
