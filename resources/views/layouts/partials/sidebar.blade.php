@@ -162,7 +162,8 @@
                     </a>
                 </div>
             </div>
-        @endif
+            @endif
+            
 
         {{-- Finance --}}
         <div class="sidebar-dropdown {{ $financeOpen ? 'open' : '' }}">
