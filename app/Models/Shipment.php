@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Shipment extends Model
@@ -66,6 +67,12 @@ class Shipment extends Model
         return $this->belongsTo(Branch::class, 'destination_branch_id');
     }
 
+
+    public function statusHistories()
+    {
+        return $this->hasMany(ShipmentStatusHistory::class)
+            ->orderBy('changed_at');
+    }
 
     public function needsTransfer(): bool
     {

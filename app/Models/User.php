@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Policies\TestUsersPolicy;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -75,6 +76,14 @@ class User extends Authenticatable
 
     public function client(){
         return $this->belongsTo(Client::class);
+    }
+
+    public function shipmentStatusChanges()
+    {
+        return $this->hasMany(
+            ShipmentStatusHistory::class,
+            'changed_by_user_id'
+        );
     }
 
     public function hasPermission(string $permission){
