@@ -57,17 +57,18 @@ return new class extends Migration
 
             $table->enum('status', [
                 'pending',
+                'rejected',
                 'assigned_to_collector',
                 'collected',
                 'in_stock',
-                'ready_for_transfer',
                 'in_transit',
-                'received_at_branch',
-                'assigned_to_driver',
+                'assigned_to_delivery',
                 'out_for_delivery',
                 'delivered',
+                'delivery_failed',
+                'returning',
+                'returned_to_client',
                 'cancelled',
-                'returned',
             ])->default('pending');
 
             $table->text('notes')->nullable();
@@ -143,28 +144,33 @@ return new class extends Migration
 | settled   = تمت تصفية المبلغ مع client
 |
 | status flow:
-|
-| pending
-|   ↓
-| assigned_to_collector
-|   ↓
-| collected
-|   ↓
-| in_stock
-|   ↓
-| ready_for_transfer
-|   ↓
-| in_transit
-|   ↓
-| received_at_branch
-|   ↓
-| in_stock
-|   ↓
-| assigned_to_driver
-|   ↓
-| out_for_delivery
-|   ↓
-| delivered
+
+
+    pending               → Waiting for manager/operations review.
+
+    rejected              → Rejected by Manager or Operations.
+
+    assigned_to_collector       → Pickup mission created and assigned to a driver.
+
+    collected             → Driver collected the shipment from the client.
+
+    in_stock             → Shipment arrived at the branch.
+
+    in_transit            → Shipment is being transferred between branches.
+
+    delivery_assigned     → Delivery mission created and assigned to a driver.
+
+    out_for_delivery      → Driver started delivery.
+
+    delivered             → Successfully delivered.
+
+    delivery_failed       → Delivery attempt failed.
+
+    returning             → Operations decided to return the shipment to the client.
+
+    returned_to_client    → Shipment returned to the client.
+    
+    cancelled             → Shipment cancelled.
 |
 | حالات جانبية:
 | pending / assigned_to_collector / in_stock → cancelled
