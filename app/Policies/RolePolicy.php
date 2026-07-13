@@ -26,7 +26,18 @@ class RolePolicy
         return $user->hasPermission('roles.create');
     }
     public function update(User $user, Role $role){
-        return $role->id !== $user->role_id && $user->hasPermission('roles.update');
+
+        // mmnou3 nsawe update la aya user ysir admin
+        if ($role->name === 'admin') {
+            return false;
+        }
+
+        // m 7ada fi y3addil 7alo
+        if ($user->role_id === $role->id) {
+            return false;
+        }
+
+        return $user->hasPermission('roles.update');
     }
     public function delete(User $user, Role $role){
         return $role->id !== $user->role_id && $user->hasPermission('roles.delete');

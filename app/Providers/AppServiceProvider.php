@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Branch;
+use App\Models\Client;
 use App\Models\Role;
 use App\Models\User;
 use App\Policies\BranchPolicy;
+use App\Policies\ClientPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\TestUsersPolicy;
 use App\Policies\UserPolicy;
@@ -38,5 +40,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Branch::class, BranchPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Client::class, ClientPolicy::class);
     }
 }
