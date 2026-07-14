@@ -24,7 +24,7 @@ return new class extends Migration
                 ->constrained()
                 ->restrictOnDelete();
 
-            $table->foreignId('delivery_agent_id')
+            $table->foreignId('current_agent_id')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
@@ -40,6 +40,7 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->string('receiver_name');
+            $table->string('receiver_email');
             $table->string('receiver_phone');
             $table->string('receiver_city');
             $table->string('receiver_address');
@@ -57,25 +58,24 @@ return new class extends Migration
 
             $table->enum('status', [
                 'pending',
-                'rejected',
-                'assigned_to_collector',
+                'assigned_to_collection',
                 'collected',
                 'in_stock',
+                'assigned_to_transfer',
                 'in_transit',
+                'received_at_branch',
                 'assigned_to_delivery',
                 'out_for_delivery',
                 'delivered',
-                'delivery_failed',
-                'returning',
-                'returned_to_client',
+                'rejected',
                 'cancelled',
+                'returned',
             ])->default('pending');
 
             $table->text('notes')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
-
 
             $table->index(['status', 'created_at']);
 
@@ -87,7 +87,7 @@ return new class extends Migration
 
             $table->index(['current_branch_id', 'status']);
 
-            $table->index(['delivery_agent_id', 'status']);
+            $table->index(['current_agent_id', 'status']);
 
             $table->index(['destination_branch_id', 'status']);
         });
@@ -144,33 +144,28 @@ return new class extends Migration
 | settled   = تمت تصفية المبلغ مع client
 |
 | status flow:
-
-
-    pending               → Waiting for manager/operations review.
-
-    rejected              → Rejected by Manager or Operations.
-
-    assigned_to_collector       → Pickup mission created and assigned to a driver.
-
-    collected             → Driver collected the shipment from the client.
-
-    in_stock             → Shipment arrived at the branch.
-
-    in_transit            → Shipment is being transferred between branches.
-
-    delivery_assigned     → Delivery mission created and assigned to a driver.
-
-    out_for_delivery      → Driver started delivery.
-
-    delivered             → Successfully delivered.
-
-    delivery_failed       → Delivery attempt failed.
-
-    returning             → Operations decided to return the shipment to the client.
-
-    returned_to_client    → Shipment returned to the client.
-    
-    cancelled             → Shipment cancelled.
+|
+| pending
+|   ↓
+| assigned_to_collector
+|   ↓
+| collected
+|   ↓
+| in_stock
+|   ↓
+| ready_for_transfer
+|   ↓
+| in_transit
+|   ↓
+| received_at_branch
+|   ↓
+| in_stock
+|   ↓
+| assigned_to_driver
+|   ↓
+| out_for_delivery
+|   ↓
+| delivered
 |
 | حالات جانبية:
 | pending / assigned_to_collector / in_stock → cancelled
