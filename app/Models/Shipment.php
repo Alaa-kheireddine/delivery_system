@@ -14,12 +14,13 @@ class Shipment extends Model
         'tracking_number',
 
         'branch_id',
-        'created_by',
-        'delivery_agent_id',
+        'client_id',
+        'current_agent_id',
         'current_branch_id',
         'destination_branch_id',
 
         'receiver_name',
+        'receiver_email',
         'receiver_phone',
         'receiver_city',
         'receiver_address',
@@ -49,12 +50,12 @@ class Shipment extends Model
 
     public function creator()
     {
-        return $this->belongsTo(Client::class, 'created_by');
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
-    public function deliveryAgent()
+    public function currentAgent()
     {
-        return $this->belongsTo(User::class, 'delivery_agent_id');
+        return $this->belongsTo(User::class, 'current_agent_id');
     }
 
     public function currentBranch()
@@ -73,6 +74,9 @@ class Shipment extends Model
         return $this->hasMany(ShipmentStatusHistory::class)
             ->orderBy('changed_at');
     }
+
+    
+    // Helper Methods
 
     public function needsTransfer(): bool
     {
